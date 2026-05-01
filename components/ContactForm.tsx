@@ -10,7 +10,7 @@ const services = [
   "Other",
 ];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.ewooral.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://bfam-backend-api.ewooral.com";
 
 export default function ContactForm() {
   const [form, setForm] = useState({
