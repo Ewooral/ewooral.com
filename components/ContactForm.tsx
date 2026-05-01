@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const services = [
   "Website",
@@ -10,51 +11,54 @@ const services = [
   "Other",
 ];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://bfam-backend-api.ewooral.com";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "https://bfam-backend-api.ewooral.com";
+
+type ContactFormData = {
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  message: string;
+};
+
+const inputBase =
+  "w-full bg-bg border border-bg/40 text-ink placeholder:text-ink/40 px-5 py-4 text-[15px] outline-none transition-colors rounded-[2px]";
 
 export default function ContactForm() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    service: "",
-    message: "",
-  });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
   );
-  const [errorMsg, setErrorMsg] = useState("");
+  const [serverError, setServerError] = useState("");
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormData>();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: ContactFormData) => {
     setStatus("sending");
-    setErrorMsg("");
+    setServerError("");
 
     try {
       const res = await fetch(`${API_URL}/api/v1/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(data),
       });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.detail || "Something went wrong");
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.detail || "Something went wrong");
       }
 
       setStatus("sent");
-      setForm({ name: "", email: "", phone: "", service: "", message: "" });
+      reset();
     } catch (err) {
       setStatus("error");
-      setErrorMsg(
+      setServerError(
         err instanceof Error ? err.message : "Failed to send message"
       );
     }
@@ -81,59 +85,76 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-[520px] mx-auto">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+      className="max-w-[520px] mx-auto"
+    >
       <div className="grid gap-5">
         {/* Name */}
         <div>
           <input
             type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
             placeholder="Your name *"
-            required
-            className="w-full bg-bg/20 border border-bg/30 text-bg placeholder:text-bg/40 px-5 py-4 text-[15px] outline-none focus:border-bg/60 transition-colors"
+            {...register("name", {
+              required: "Name is required",
+              minLength: { value: 2, message: "Name must be at least 2 characters" },
+            })}
+            className={`${inputBase} ${errors.name ? "border-red-600" : "border-bg/30 focus:border-bg/60"}`}
           />
+          {errors.name && (
+            <p className="text-red-800 font-medium text-[13px] mt-1">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Email */}
         <div>
           <input
             type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
             placeholder="Email address *"
-            required
-            className="w-full bg-bg/20 border border-bg/30 text-bg placeholder:text-bg/40 px-5 py-4 text-[15px] outline-none focus:border-bg/60 transition-colors"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Please enter a valid email address",
+              },
+            })}
+            className={`${inputBase} ${errors.email ? "border-red-600" : "border-bg/30 focus:border-bg/60"}`}
           />
+          {errors.email && (
+            <p className="text-red-800 font-medium text-[13px] mt-1">{errors.email.message}</p>
+          )}
         </div>
 
         {/* Phone */}
         <div>
           <input
             type="tel"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
             placeholder="Phone number (optional)"
-            className="w-full bg-bg/20 border border-bg/30 text-bg placeholder:text-bg/40 px-5 py-4 text-[15px] outline-none focus:border-bg/60 transition-colors"
+            {...register("phone", {
+              pattern: {
+                value: /^[+]?[\d\s()-]{7,20}$/,
+                message: "Please enter a valid phone number",
+              },
+            })}
+            className={`${inputBase} ${errors.phone ? "border-red-600" : "border-bg/30 focus:border-bg/60"}`}
           />
+          {errors.phone && (
+            <p className="text-red-800 font-medium text-[13px] mt-1">{errors.phone.message}</p>
+          )}
         </div>
 
         {/* Service */}
         <div>
           <select
-            name="service"
-            value={form.service}
-            onChange={handleChange}
-            className="w-full bg-bg/20 border border-bg/30 text-bg px-5 py-4 text-[15px] outline-none focus:border-bg/60 transition-colors appearance-none"
+            {...register("service")}
+            className={`${inputBase} border-bg/30 focus:border-bg/60 appearance-none`}
           >
-            <option value="" className="text-bg bg-[#1a1a2e]">
+            <option value="" className="text-ink bg-bg">
               What do you need? (optional)
             </option>
             {services.map((s) => (
-              <option key={s} value={s} className="text-bg bg-[#1a1a2e]">
+              <option key={s} value={s} className="text-ink bg-bg">
                 {s}
               </option>
             ))}
@@ -143,19 +164,25 @@ export default function ContactForm() {
         {/* Message */}
         <div>
           <textarea
-            name="message"
-            value={form.message}
-            onChange={handleChange}
             placeholder="Tell us about your project *"
-            required
             rows={5}
-            className="w-full bg-bg/20 border border-bg/30 text-bg placeholder:text-bg/40 px-5 py-4 text-[15px] outline-none focus:border-bg/60 transition-colors resize-none"
+            {...register("message", {
+              required: "Message is required",
+              minLength: { value: 10, message: "Message must be at least 10 characters" },
+              maxLength: { value: 2000, message: "Message must be under 2000 characters" },
+            })}
+            className={`${inputBase} resize-none ${errors.message ? "border-red-600" : "border-bg/30 focus:border-bg/60"}`}
           />
+          {errors.message && (
+            <p className="text-red-800 font-medium text-[13px] mt-1">{errors.message.message}</p>
+          )}
         </div>
       </div>
 
-      {errorMsg && (
-        <p className="text-red-300 text-[14px] mt-4 text-center">{errorMsg}</p>
+      {serverError && (
+        <p className="text-red-800 font-medium text-[14px] mt-4 text-center">
+          {serverError}
+        </p>
       )}
 
       <button

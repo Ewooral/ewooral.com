@@ -3,19 +3,16 @@ const services = [
     num: "01",
     title: "Websites that convert",
     body: "Fast, mobile-first websites with copy written to turn visitors into enquiries. Hosted, secure, and easy to update. Delivered in 2\u20133 weeks.",
-    price: "GH\u20B5 3,500",
   },
   {
     num: "02",
     title: "Brand identity",
     body: "Logo, colours, typography, and a brand guide your future-self will thank you for. Looks sharp on a billboard, on Instagram, and on a business card.",
-    price: "GH\u20B5 4,500",
   },
   {
     num: "03",
     title: "Social media management",
     body: "Monthly retainer covering content calendar, post design, captions, and engagement. We don\u2019t just post \u2014 we build a presence customers take seriously.",
-    price: "GH\u20B5 1,800 / month",
   },
 ];
 
@@ -54,12 +51,9 @@ export default function Services() {
               <h3 className="font-display font-bold text-[28px] tracking-[-0.02em] mb-4 leading-[1.1]">
                 {s.title}
               </h3>
-              <p className="text-ink-dim text-[15px] leading-[1.6] mb-6">
+              <p className="text-ink-dim text-[15px] leading-[1.6]">
                 {s.body}
               </p>
-              <div className="font-mono text-[13px] text-accent pt-5 border-t border-line">
-                <span className="text-ink-faint">FROM</span> &nbsp; {s.price}
-              </div>
             </div>
           ))}
         </div>
