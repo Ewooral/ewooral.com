@@ -1,3 +1,5 @@
+import ContactForm from "./ContactForm";
+
 export default function FinalCTA() {
   return (
     <section
@@ -8,22 +10,25 @@ export default function FinalCTA() {
         <div className="font-mono text-[13px] text-bg/60 tracking-[0.1em] mb-4">
           05 / Let&apos;s talk
         </div>
-        <h2 className="font-display font-bold text-bg mb-8">
+        <h2 className="font-display font-bold text-bg mb-4">
           Ready to build{" "}
           <span className="font-serif italic font-normal">something</span>{" "}
           great?
         </h2>
         <p className="text-[18px] max-w-[540px] mx-auto mb-12 text-bg/75">
-          Whether you need a product built, a website launched, or a brand
-          identity that commands respect &mdash; let&apos;s talk. Book a free
-          30-minute discovery call.
+          Tell us about your project. We&apos;ll get back to you within
+          24 hours.
         </p>
-        <a
-          href="mailto:admin@ewooral.com"
-          className="cta-dark-lift inline-block bg-bg text-accent px-10 py-5 font-bold text-[14px] tracking-[0.1em] uppercase no-underline transition-transform duration-200"
-        >
-          admin@ewooral.com &rarr;
-        </a>
+        <ContactForm />
+        <div className="mt-10 text-bg/50 text-[13px]">
+          or email us directly at{" "}
+          <a
+            href="mailto:admin@ewooral.com"
+            className="text-bg/80 underline hover:text-bg transition-colors"
+          >
+            admin@ewooral.com
+          </a>
+        </div>
       </div>
     </section>
   );
