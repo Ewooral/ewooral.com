@@ -21,12 +21,19 @@ export default function FinalCTA() {
         </p>
         <ContactForm />
         <div className="mt-10 text-bg/50 text-[13px]">
-          or email us directly at{" "}
+          or reach us directly &mdash;{" "}
           <a
             href="mailto:admin@ewooral.com"
             className="text-bg/80 underline hover:text-bg transition-colors"
           >
             admin@ewooral.com
+          </a>
+          {" "}&middot;{" "}
+          <a
+            href="https://wa.me/447888374946"
+            className="text-bg/80 underline hover:text-bg transition-colors"
+          >
+            WhatsApp +44 7888 374946
           </a>
         </div>
       </div>
