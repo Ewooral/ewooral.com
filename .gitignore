@@ -1,0 +1,35 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# pnpm
+.pnpm-store/
+
+# next.js
+/.next/
+/out/
+.turbo/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+*-debug.log*
+
+# env
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# ssl certs (generated on server)
+/certbot/

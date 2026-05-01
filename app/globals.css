@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+/* === Design tokens — generates utility classes (bg-bg, text-ink, text-accent, etc.) === */
+@theme {
+  --color-bg: #15151f;
+  --color-bg-2: #0f0f17;
+  --color-ink: #f5f1e8;
+  --color-ink-dim: #a8a39a;
+  --color-ink-faint: #6b6760;
+  --color-accent: #f5b820;
+  --color-accent-deep: #d99500;
+
+  --font-display: "Bricolage Grotesque", sans-serif;
+  --font-serif: "Instrument Serif", serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* Make CSS variables available outside @theme too, for arbitrary values and custom CSS */
+:root {
+  --line: rgba(245, 241, 232, 0.08);
+  --line-strong: rgba(245, 241, 232, 0.15);
+}
+
+/* === Base layer === */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  /* Atmospheric warm glow — bottom-left, like reference */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 0% 100%, rgba(245, 184, 32, 0.18) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 100% 0%, rgba(245, 184, 32, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Subtle noise texture */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  /* Fluid typography that Tailwind doesn't handle natively */
+  h1 {
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+
+  h2 {
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+}
+
+/* === Custom utilities === */
+@layer utilities {
+  /* Fluid display sizes that Tailwind can't generate without a config plugin */
+  .text-fluid-headline {
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+
+  .text-fluid-quote {
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .text-fluid-quote-sm {
+    font-size: clamp(24px, 2.4vw, 32px);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  /* Entrance reveal — staggered animation across hero items */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: reveal 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+  .reveal-d1 { animation-delay: 0.1s; }
+  .reveal-d2 { animation-delay: 0.25s; }
+  .reveal-d3 { animation-delay: 0.4s; }
+  .reveal-d4 { animation-delay: 0.55s; }
+  .reveal-d5 { animation-delay: 0.7s; }
+
+  /* Marquee scroll */
+  .marquee-track {
+    animation: scroll 35s linear infinite;
+  }
+
+  /* CTA hover lift + glow */
+  .cta-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(245, 184, 32, 0.35);
+  }
+
+  .cta-dark-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Eyebrow with accent line prefix */
+  .eyebrow-line::before {
+    content: "";
+    width: 32px;
+    height: 1px;
+    background: var(--color-accent);
+  }
+
+  /* Active nav link underline */
+  .nav-link-active::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: var(--color-accent);
+  }
+
+  /* Quote opening mark */
+  .quote-mark::before {
+    content: '"';
+    color: var(--color-accent);
+    font-size: 1.5em;
+    line-height: 0;
+  }
+
+  /* Logo dot glow */
+  .logo-mark-glow {
+    box-shadow: 0 0 20px var(--color-accent);
+  }
+
+  /* Floating poster shadow */
+  .poster-shadow {
+    box-shadow:
+      0 40px 80px -20px rgba(0, 0, 0, 0.6),
+      0 0 100px -30px rgba(245, 184, 32, 0.15);
+  }
+
+  /* Badge tilt + glow */
+  .badge-tilt {
+    transform: rotate(8deg);
+    box-shadow: 0 12px 40px rgba(245, 184, 32, 0.4);
+  }
+
+  /* Scribble tilt */
+  .scribble-tilt {
+    transform: rotate(-8deg);
+  }
+
+  /* Final CTA noise overlay */
+  .cta-noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    opacity: 0.08;
+    mix-blend-mode: multiply;
+  }
+
+  /* Border-line color helper for grid dividers */
+  .border-line {
+    border-color: var(--line);
+  }
+  .border-line-strong {
+    border-color: var(--line-strong);
+  }
+}
+
+/* === Keyframes === */
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
