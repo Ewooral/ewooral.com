@@ -52,11 +52,13 @@ export default function Nav() {
           href="#"
           className="flex items-center gap-2 text-ink no-underline"
         >
-          <img
-            src="/logo.png"
-            alt="Ewooral & BFAM Holdings"
-            className="h-10 w-10 rounded-full"
-          />
+          <span className="flex items-center justify-center h-11 w-11 rounded-full border-2 border-accent">
+            <img
+              src="/logo.png"
+              alt="Ewooral & BFAM Holdings"
+              className="h-9 w-9 rounded-full"
+            />
+          </span>
           <span className="font-display font-extrabold text-[16px] tracking-[-0.02em]">
             Ewooral<span className="text-accent">&amp;</span>BFAM
           </span>
