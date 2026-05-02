@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     "BFAM Holdings",
     "Ewooral",
   ],
+  icons: {
+    icon: "/favicon.svg",
+  },
   openGraph: {
     title: "Ewooral & BFAM Holdings — Technology for African Businesses",
     description:
@@ -20,6 +23,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_GH",
     url: "https://ewooral.com",
+    images: [
+      {
+        url: "/Black White Simple Initials Logo .png",
+        width: 1200,
+        height: 630,
+        alt: "Ewooral & BFAM Holdings",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ewooral & BFAM Holdings — Technology for African Businesses",
+    description:
+      "We build products that solve real problems — from AI safety tools to digital infrastructure for African businesses.",
+    images: ["/Black White Simple Initials Logo .png"],
   },
 };
 

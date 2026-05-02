@@ -2,8 +2,8 @@
 
 /* === Design tokens — generates utility classes (bg-bg, text-ink, text-accent, etc.) === */
 @theme {
-  --color-bg: #15151f;
-  --color-bg-2: #0f0f17;
+  --color-bg: #1a3a2a;
+  --color-bg-2: #142a1e;
   --color-ink: #f5f1e8;
   --color-ink-dim: #a8a39a;
   --color-ink-faint: #6b6760;
