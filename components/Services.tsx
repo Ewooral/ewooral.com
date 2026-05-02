@@ -24,7 +24,7 @@ export default function Services() {
         src="/Black White Simple Initials Logo .png"
         alt=""
         aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.03] pointer-events-none select-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] opacity-[0.04] pointer-events-none select-none"
       />
       <div className="max-w-[1320px] mx-auto px-8 relative">
         {/* Section head */}
