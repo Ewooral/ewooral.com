@@ -1,24 +1,27 @@
 const products = [
   {
+    name: "Aho\u0254f\u025B",
+    status: "Live",
+    description:
+      "Booking and business management platform for salons, barbershops, and spas in Ghana. Customers book online, owners manage everything from their phone.",
+    tags: ["Booking", "SaaS", "WhatsApp"],
+    href: "https://ahofe.ewooral.com",
+  },
+  {
     name: "BFAM Safety",
     status: "In Development",
     description:
       "AI-powered misinformation detection platform. Helps media houses, governments, and organisations identify and flag false narratives before they spread.",
     tags: ["AI/ML", "NLP", "B2B SaaS"],
-  },
-  {
-    name: "BFAM Backend Platform",
-    status: "Live",
-    description:
-      "Production-grade backend infrastructure powering our product suite. Built with FastAPI, PostgreSQL, and async-first architecture.",
-    tags: ["FastAPI", "PostgreSQL", "Docker"],
+    href: null,
   },
   {
     name: "More coming",
-    status: "2026\u2013Q4",
+    status: "2025\u2013Q4",
     description:
       "We\u2019re building tools that solve real problems for African businesses. Payments, logistics, and communication infrastructure are on the roadmap.",
     tags: ["Fintech", "Logistics", "Comms"],
+    href: null,
   },
 ];
 
@@ -46,34 +49,45 @@ export default function Products() {
 
         {/* Product cards */}
         <div className="grid md:grid-cols-3 gap-6">
-          {products.map((p) => (
-            <div
-              key={p.name}
-              className="border border-line rounded-[4px] p-8 transition-colors duration-300 hover:border-accent/40 hover:bg-accent/[0.02] flex flex-col"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-display font-bold text-[22px] tracking-[-0.02em]">
-                  {p.name}
-                </h3>
-                <span className="font-mono text-[10px] text-accent bg-accent/10 px-3 py-1 rounded-full uppercase tracking-[0.1em]">
-                  {p.status}
-                </span>
-              </div>
-              <p className="text-ink-dim text-[15px] leading-[1.6] mb-6 flex-1">
-                {p.description}
-              </p>
-              <div className="flex flex-wrap gap-2 pt-4 border-t border-line">
-                {p.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-mono text-[11px] text-ink-faint border border-line px-3 py-1 rounded-[2px]"
-                  >
-                    {tag}
+          {products.map((p) => {
+            const Card = p.href ? "a" : "div";
+            return (
+              <Card
+                key={p.name}
+                {...(p.href ? { href: p.href, target: "_blank", rel: "noopener noreferrer" } : {})}
+                className={`border border-line rounded-[4px] p-8 transition-all duration-300 hover:border-accent/40 hover:bg-accent/[0.02] flex flex-col no-underline ${
+                  p.href ? "hover:-translate-y-1 cursor-pointer" : ""
+                }`}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-display font-bold text-[22px] tracking-[-0.02em]">
+                    {p.name}
+                  </h3>
+                  <span className="font-mono text-[10px] text-accent bg-accent/10 px-3 py-1 rounded-full uppercase tracking-[0.1em]">
+                    {p.status}
                   </span>
-                ))}
-              </div>
-            </div>
-          ))}
+                </div>
+                <p className="text-ink-dim text-[15px] leading-[1.6] mb-6 flex-1">
+                  {p.description}
+                </p>
+                <div className="flex flex-wrap gap-2 pt-4 border-t border-line">
+                  {p.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="font-mono text-[11px] text-ink-faint border border-line px-3 py-1 rounded-[2px]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                {p.href && (
+                  <div className="mt-4 font-mono text-[12px] text-accent">
+                    Try it &rarr;
+                  </div>
+                )}
+              </Card>
+            );
+          })}
         </div>
       </div>
     </section>
