@@ -50,9 +50,13 @@ export default function Nav() {
         {/* Logo */}
         <a
           href="#"
-          className="flex items-center gap-[6px] text-ink no-underline"
+          className="flex items-center gap-2 text-ink no-underline"
         >
-          <span className="inline-block w-[10px] h-[10px] bg-accent rounded-full mr-1 -translate-y-[1px] logo-mark-glow" />
+          <img
+            src="/logo.png"
+            alt="Ewooral & BFAM Holdings"
+            className="h-10 w-10 rounded-full"
+          />
           <span className="font-display font-extrabold text-[16px] tracking-[-0.02em]">
             Ewooral<span className="text-accent">&amp;</span>BFAM
           </span>
