@@ -18,8 +18,15 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="py-[120px] relative z-[2]">
-      <div className="max-w-[1320px] mx-auto px-8">
+    <section id="services" className="py-[120px] relative z-[2] overflow-hidden">
+      {/* Watermark logo */}
+      <img
+        src="/Black White Simple Initials Logo .png"
+        alt=""
+        aria-hidden="true"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.03] pointer-events-none select-none"
+      />
+      <div className="max-w-[1320px] mx-auto px-8 relative">
         {/* Section head */}
         <div className="grid md:grid-cols-[1fr_2fr] gap-[60px] mb-20 items-end">
           <div>

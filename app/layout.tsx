@@ -14,8 +14,8 @@ export const metadata: Metadata = {
     "Ewooral",
   ],
   icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
+    icon: "/favicon-v2.png",
+    apple: "/favicon-v2.png",
   },
   openGraph: {
     title: "Ewooral & BFAM Holdings — Technology for African Businesses",
