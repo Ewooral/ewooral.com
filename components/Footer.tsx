@@ -7,7 +7,23 @@ export default function Footer() {
             &copy; 2025 Ewooral &amp; BFAM Holdings &middot; Accra, Ghana
             &middot; All rights reserved
           </div>
-          <ul className="flex gap-6 list-none text-[13px]">
+          <ul className="flex flex-wrap gap-6 list-none text-[13px]">
+            <li>
+              <a
+                href="/privacy"
+                className="text-ink-dim no-underline hover:text-accent transition-colors"
+              >
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/terms"
+                className="text-ink-dim no-underline hover:text-accent transition-colors"
+              >
+                Terms of Service
+              </a>
+            </li>
             <li>
               <a
                 href="https://wa.me/447888374946"
