@@ -21,6 +21,39 @@
   --line-strong: rgba(245, 241, 232, 0.15);
 }
 
+[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-bg-2: #f7f7f5;
+  --color-ink: #1c1c1a;
+  --color-ink-dim: #5a5a56;
+  --color-ink-faint: #8a8a84;
+  --color-accent: #d99500;
+  --color-accent-deep: #b87a00;
+  --line: rgba(28, 28, 26, 0.10);
+  --line-strong: rgba(28, 28, 26, 0.18);
+}
+
+[data-theme="dark"] {
+  --color-bg: #0e0e0e;
+  --color-bg-2: #171717;
+  --color-ink: #f0f0f0;
+  --color-ink-dim: #a0a0a0;
+  --color-ink-faint: #636363;
+  --color-accent: #f5b820;
+  --color-accent-deep: #d99500;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.13);
+}
+
+/* Suppress body::before glow on light theme */
+[data-theme="light"] body::before {
+  opacity: 0;
+}
+
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* === Base layer === */
 @layer base {
   html {
