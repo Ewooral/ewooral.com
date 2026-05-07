@@ -50,6 +50,21 @@
   opacity: 0;
 }
 
+/* Force light text on hardcoded green backgrounds in light mode */
+[data-theme="light"] [class*="bg-\[#142a1e\]"],
+[data-theme="light"] [class*="bg-\[#1a3a2a\]"],
+[data-theme="light"] [class*="bg-\[#0f2017\]"] {
+  color: #f5f1e8 !important;
+}
+
+/* Footer keeps dark bg + light text in light mode */
+[data-theme="light"] footer {
+  --color-ink: #f5f1e8;
+  --color-ink-dim: #a8a39a;
+  --color-ink-faint: #6b6760;
+  background: #1a3a2a;
+}
+
 html {
   transition: background-color 0.3s ease, color 0.3s ease;
 }

@@ -2,12 +2,12 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-type Theme = "default" | "light" | "dark";
-const THEME_ORDER: Theme[] = ["default", "light", "dark"];
+type Theme = "light" | "default" | "dark";
+const THEME_ORDER: Theme[] = ["light", "default", "dark"];
 const THEME_KEY = "ewooral_theme";
 
 function useTheme() {
-  const [theme, setTheme] = useState<Theme>("default");
+  const [theme, setTheme] = useState<Theme>("light");
   useEffect(() => {
     const stored = localStorage.getItem(THEME_KEY) as Theme | null;
     if (stored && THEME_ORDER.includes(stored)) setTheme(stored);
