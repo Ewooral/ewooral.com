@@ -53,7 +53,7 @@ export default function Hero() {
             </div>
 
             {/* Poster */}
-            <div className="poster-shadow absolute inset-0 border border-line-strong rounded-[4px] overflow-hidden p-8 flex flex-col justify-between bg-gradient-to-br from-[#1e3f2e] to-[#0a1a10]">
+            <div className="dark-panel poster-shadow absolute inset-0 border border-line-strong rounded-[4px] overflow-hidden p-8 flex flex-col justify-between bg-gradient-to-br from-[#1e3f2e] to-[#0a1a10]">
               {/* Tag */}
               <div className="flex justify-between font-mono text-[11px] text-ink-faint tracking-[0.05em]">
                 <span>BFAM / Holdings</span>
