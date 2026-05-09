@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 export const metadata: Metadata = {
   title: "Ewooral & BFAM Holdings — Technology for African Businesses",
@@ -7,7 +8,9 @@ export const metadata: Metadata = {
     "Family-founded technology company building AI safety products, web platforms, and digital services for African businesses and communities.",
   keywords: [
     "tech company Ghana",
-    "AI safety Africa",
+    "salon booking software Ghana",
+    "Ahofe booking platform",
+    "church management software Ghana",
     "web design Accra",
     "software development Ghana",
     "BFAM Holdings",
@@ -64,7 +67,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <WhatsAppFloat />
+      </body>
     </html>
   );
 }

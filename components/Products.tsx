@@ -3,24 +3,27 @@ const products = [
     name: "Aho\u0254f\u025B",
     status: "Live",
     description:
-      "Booking and business management platform for salons, barbershops, and spas in Ghana. Customers book online, owners manage everything from their phone.",
-    tags: ["Booking", "SaaS", "WhatsApp"],
+      "Booking and business management for salons, barbershops, clinics, and tailors across Africa. Customers book online via a WhatsApp-shareable link. Owners manage bookings, revenue, and customers from their phone.",
+    pricing: "From GH\u20B5 0/month",
+    tags: ["Booking", "SaaS", "WhatsApp", "AI"],
     href: "https://ahofe.ewooral.com",
   },
   {
-    name: "BFAM Safety",
-    status: "In Development",
+    name: "PENT-OS",
+    status: "Pilot",
     description:
-      "AI-powered misinformation detection platform. Helps media houses, governments, and organisations identify and flag false narratives before they spread.",
-    tags: ["AI/ML", "NLP", "B2B SaaS"],
+      "Church and school management platform \u2014 membership, attendance, giving, pastoral care, and school administration in one system. Built for The Church of Pentecost, designed for any denomination.",
+    pricing: null,
+    tags: ["Church", "School", "SaaS"],
     href: null,
   },
   {
     name: "More coming",
-    status: "2025\u2013Q4",
+    status: "2026+",
     description:
-      "We\u2019re building tools that solve real problems for African businesses. Payments, logistics, and communication infrastructure are on the roadmap.",
-    tags: ["Fintech", "Logistics", "Comms"],
+      "We\u2019re building tools that solve real problems for African businesses and institutions. AI safety, fintech, and communication infrastructure are on the roadmap.",
+    pricing: null,
+    tags: ["AI/ML", "Fintech", "Infrastructure"],
     href: null,
   },
 ];
@@ -67,9 +70,14 @@ export default function Products() {
                     {p.status}
                   </span>
                 </div>
-                <p className="text-ink-dim text-[15px] leading-[1.6] mb-6 flex-1">
+                <p className="text-ink-dim text-[15px] leading-[1.6] mb-4 flex-1">
                   {p.description}
                 </p>
+                {p.pricing && (
+                  <div className="font-mono text-[13px] text-accent mb-4">
+                    {p.pricing}
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-2 pt-4 border-t border-line">
                   {p.tags.map((tag) => (
                     <span
