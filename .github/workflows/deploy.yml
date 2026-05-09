@@ -51,6 +51,7 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker pull ${{ env.IMAGE }}
             cd ~/apps/ewooral-site
-            docker compose down web
-            docker compose up -d
+            git fetch origin && git reset --hard origin/main
+            docker compose up -d --force-recreate --pull always web
+            docker compose restart nginx
             docker image prune -f

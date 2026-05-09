@@ -1,7 +1,6 @@
 services:
   web:
     image: ghcr.io/ewooral/ewooral-site:latest
-    build: .
     container_name: ewooral-site
     restart: unless-stopped
     ports:
