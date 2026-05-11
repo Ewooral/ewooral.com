@@ -62,13 +62,13 @@ export default function Clients() {
               We&apos;re a family that builds together &mdash; two founders,
               seven board members, one mission.
             </p>
-            <div className="text-[14px] text-ink-dim tracking-[0.05em] mb-8">
-              &mdash;{" "}
-              <strong className="text-ink font-medium">
-                Elijah Owusu Boahen &amp; John Oduro Boateng
-              </strong>
-              , Co-Founders
-            </div>
+            {/*<div className="text-[14px] text-ink-dim tracking-[0.05em] mb-8">*/}
+            {/*  &mdash;{" "}*/}
+            {/*  <strong className="text-ink font-medium">*/}
+            {/*    Elijah Owusu Boahen &amp; John Oduro Boateng*/}
+            {/*  </strong>*/}
+            {/*  , Co-Founders*/}
+            {/*</div>*/}
             <div className="border-t border-line pt-6 grid grid-cols-3 gap-4 text-center">
               <div>
                 <div className="font-display font-extrabold text-[32px] text-accent">
