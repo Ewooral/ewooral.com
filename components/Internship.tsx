@@ -574,7 +574,7 @@ export default function BFAMInternshipPage() {
           </aside>
 
           {/* ── Right panel: form ── */}
-          <main className="px-4 sm:px-8 xl:px-12 py-10 md:py-14 page-enter">
+          <main className="px-4 sm:px-8 py-10 md:py-14 page-enter flex flex-col items-center lg:justify-start">
 
             {/* Mobile-only header */}
             <div className="lg:hidden mb-10">
@@ -604,7 +604,7 @@ export default function BFAMInternshipPage() {
               </div>
             </div>
 
-            <div className="max-w-xl mx-auto lg:mx-0">
+            <div className="max-w-xl mx-auto">
               {submitted ? (
                 <div className="bg-bg-2 border border-[var(--line)] rounded-2xl overflow-hidden">
                   <SuccessScreen email={form.email} />
