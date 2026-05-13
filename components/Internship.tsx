@@ -6,6 +6,7 @@
 "use client"
 import { useState, useCallback, useEffect, type ChangeEvent } from "react"
 import Nav from "@/components/Nav"
+import PhoneField from "@/components/PhoneField"
 
 // ─── API config ───────────────────────────────────────────────────────────────
 // Default to production. Override with NEXT_PUBLIC_API_URL in .env.local for dev.
@@ -162,7 +163,7 @@ function StepPersonal({ data, errors, onChange }: {
         <input type="email" className={inputCls(!!errors.email)} value={data.email} onChange={f("email")} placeholder="ada@example.com" autoComplete="email" />
       </Field>
       <Field label="Phone number" required error={errors.phone}>
-        <input type="tel" className={inputCls(!!errors.phone)} value={data.phone} onChange={f("phone")} placeholder="+233 XX XXX XXXX" autoComplete="tel" />
+        <PhoneField value={data.phone} onChange={(val) => onChange({ target: { name: "phone", value: val } } as React.ChangeEvent<HTMLInputElement>)} error={!!errors.phone} />
       </Field>
       <Field label="Experience level" required error={errors.experience_level}>
         <select className={inputCls(!!errors.experience_level)} value={data.experience_level} onChange={f("experience_level")}>

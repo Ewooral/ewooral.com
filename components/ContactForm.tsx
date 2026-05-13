@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import PhoneField from "@/components/PhoneField";
 
 const services = [
   "Website",
@@ -38,7 +39,7 @@ export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [serverError, setServerError] = useState("");
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactFormData>();
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<ContactFormData>();
 
   const onSubmit = async (data: ContactFormData) => {
     setStatus("sending");
@@ -161,13 +162,12 @@ export default function ContactForm() {
           {/* Phone */}
           <div>
             <Label>Phone number</Label>
-            <input
-              type="tel"
-              placeholder="+233 24 000 0000 (optional)"
-              {...register("phone", {
-                pattern: { value: /^[+]?[\d\s()-]{7,20}$/, message: "Enter a valid phone number" },
-              })}
-              className={`${inputBase} ${errors.phone ? "border-red-500" : "border-white/10 focus:border-[var(--color-accent)]/50"}`}
+            <Controller
+              name="phone"
+              control={control}
+              render={({ field }) => (
+                <PhoneField value={field.value ?? ""} onChange={field.onChange} error={!!errors.phone} />
+              )}
             />
             {errors.phone && <p className="text-red-400 text-[12px] mt-1">{errors.phone.message}</p>}
           </div>
