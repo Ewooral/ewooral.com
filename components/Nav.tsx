@@ -24,12 +24,12 @@ function useTheme() {
 }
 
 const links = [
-  { href: "#home", label: "Home" },
-  { href: "#products", label: "Products" },
-  { href: "#services", label: "Services" },
-  { href: "#process", label: "Process" },
-  { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#home", label: "Home" },
+  { href: "/#products", label: "Products" },
+  { href: "/#services", label: "Services" },
+  { href: "/#process", label: "Process" },
+  { href: "/#about", label: "About" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export default function Nav() {
@@ -71,7 +71,7 @@ export default function Nav() {
       <div className="max-w-[1320px] mx-auto px-8 py-[18px] flex items-center justify-between">
         {/* Logo */}
         <a
-          href="#"
+          href="/"
           className="flex items-center gap-2 text-ink no-underline"
         >
           <span className="flex items-center justify-center h-11 w-11 rounded-full border-2 border-accent">
@@ -89,7 +89,7 @@ export default function Nav() {
         {/* Desktop links */}
         <ul className="hidden md:flex gap-9 list-none text-[13px] font-medium tracking-[0.08em] uppercase">
           {links.map((l) => {
-            const isActive = active === l.href.slice(1);
+            const isActive = active === l.href.slice(2);
             return (
               <li key={l.href}>
                 <a
@@ -124,7 +124,7 @@ export default function Nav() {
             )}
           </button>
           <a
-            href="#contact"
+            href="/#contact"
             className="cta-glow bg-accent text-bg px-7 py-[14px] font-bold text-[13px] tracking-[0.1em] uppercase no-underline transition-all duration-200"
           >
             Get in touch
@@ -165,7 +165,7 @@ export default function Nav() {
       >
         <ul className="flex flex-col items-center gap-8 pt-16 list-none">
           {links.map((l) => {
-            const isActive = active === l.href.slice(1);
+            const isActive = active === l.href.slice(2);
             return (
               <li key={l.href}>
                 <a
@@ -182,7 +182,7 @@ export default function Nav() {
           })}
           <li className="mt-4">
             <a
-              href="#contact"
+              href="/#contact"
               onClick={() => setMenuOpen(false)}
               className="inline-block bg-accent text-bg px-8 py-4 font-bold text-[14px] tracking-[0.1em] uppercase no-underline"
             >
