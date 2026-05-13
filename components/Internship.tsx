@@ -163,7 +163,7 @@ function StepPersonal({ data, errors, onChange }: {
         <input type="email" className={inputCls(!!errors.email)} value={data.email} onChange={f("email")} placeholder="ada@example.com" autoComplete="email" />
       </Field>
       <Field label="Phone number" required error={errors.phone}>
-        <PhoneField value={data.phone} onChange={(val) => onChange({ target: { name: "phone", value: val } } as React.ChangeEvent<HTMLInputElement>)} error={!!errors.phone} />
+        <PhoneField value={data.phone} onChange={(val) => onChange("phone", val)} error={!!errors.phone} />
       </Field>
       <Field label="Experience level" required error={errors.experience_level}>
         <select className={inputCls(!!errors.experience_level)} value={data.experience_level} onChange={f("experience_level")}>
