@@ -7,6 +7,7 @@ import Process from "@/components/Process";
 import Clients from "@/components/Clients";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
+import InternshipCTA from "@/components/InternshipCTA";
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
       <Process />
       <Clients />
       <FinalCTA />
+        <InternshipCTA />
       <Footer />
     </>
   );
