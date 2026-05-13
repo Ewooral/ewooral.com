@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
         <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-6">
           Privacy <span className="font-serif italic">Policy</span>
         </h1>
-        <p className="text-ink-dim text-sm mb-12">Last updated: May 2026</p>
+        <p className="text-ink-dim text-sm mb-12">Last updated: May 2024</p>
 
         <div className="space-y-10 text-[15px] leading-relaxed text-ink-dim">
           <Section title="1. Who we are">

@@ -9,7 +9,7 @@ export default function Hero() {
           {/* Left column */}
           <div>
             <div className="reveal reveal-d1 eyebrow-line flex items-center gap-[14px] text-[12px] font-medium tracking-[0.2em] uppercase text-ink-dim mb-8">
-              Accra &middot; Ghana &middot; Est. 2026
+              Accra &middot; Ghana &middot; Est. 2024
             </div>
 
             <h1 className="reveal reveal-d2 font-display font-extrabold mb-8">

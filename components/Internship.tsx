@@ -78,8 +78,8 @@ const STEP_META = [
 ]
 
 const PERKS = [
-  "Paid internship program",
-  "Hybrid — Accra office + remote",
+  "Fully remote — work from anywhere",
+  "Unpaid — gain real experience & portfolio",
   "Work on live products used daily",
   "Direct mentorship from engineers",
   "Real ownership, not busy work",
@@ -498,8 +498,8 @@ export default function BFAMInternshipPage() {
 
       <Nav />
 
-      <div className="min-h-screen">
-        <div className="lg:grid lg:grid-cols-[420px_1fr] xl:grid-cols-[460px_1fr] min-h-[calc(100vh-49px)]">
+      <div className="min-h-screen pt-[60px]">
+        <div className="max-w-6xl mx-auto lg:grid lg:grid-cols-[380px_1fr] xl:grid-cols-[420px_1fr] min-h-[calc(100vh-60px)]">
 
           {/* ── Left panel: brand story (desktop only) ── */}
           <aside className="dark-panel hidden lg:flex flex-col justify-between lg:sticky lg:top-0 lg:h-screen px-10 py-12 border-r border-[var(--line)] overflow-y-auto">
@@ -518,7 +518,7 @@ export default function BFAMInternshipPage() {
               {/* Headline */}
               <div className="mb-10">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent block mb-4">
-                  Internship Program · 2025
+                  Internship Program · 2024
                 </span>
                 <h1 className="font-display font-bold leading-[0.92] text-ink mb-5" style={{ fontSize: "clamp(36px, 3.5vw, 52px)" }}>
                   Build things<br />
@@ -574,7 +574,7 @@ export default function BFAMInternshipPage() {
           </aside>
 
           {/* ── Right panel: form ── */}
-          <main className="px-4 sm:px-8 py-10 md:py-14 page-enter flex flex-col items-center lg:justify-start">
+          <main className="px-4 sm:px-8 py-10 md:py-14 page-enter flex flex-col items-center">
 
             {/* Mobile-only header */}
             <div className="lg:hidden mb-10">
@@ -592,7 +592,7 @@ export default function BFAMInternshipPage() {
                 Build real products. Grow with Africa's next great tech company.
               </p>
               <div className="flex gap-2 flex-wrap">
-                {["Paid", "Hybrid", "Accra, Ghana"].map(tag => (
+                {["Remote", "Unpaid", "Accra, Ghana"].map(tag => (
                   <span
                     key={tag}
                     className="text-[11px] px-3 py-1 rounded-full border border-accent/30 text-accent font-medium"

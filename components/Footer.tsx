@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="max-w-[1320px] mx-auto px-8">
         <div className="flex flex-wrap justify-between items-center gap-6">
           <div className="font-mono text-[12px] text-ink-faint">
-            &copy; 2025 Ewooral &amp; BFAM Holdings &middot; Accra, Ghana
+            &copy; 2024 Ewooral &amp; BFAM Holdings &middot; Accra, Ghana
             &middot; All rights reserved
           </div>
           <ul className="flex flex-wrap gap-6 list-none text-[13px]">

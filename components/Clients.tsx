@@ -88,7 +88,7 @@ export default function Clients() {
               </div>
               <div>
                 <div className="font-display font-extrabold text-[32px] text-accent">
-                  2026
+                  2024
                 </div>
                 <div className="font-mono text-[11px] text-ink-faint uppercase tracking-[0.1em]">
                   Est.

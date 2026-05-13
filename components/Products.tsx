@@ -19,7 +19,7 @@ const products = [
   },
   {
     name: "More coming",
-    status: "2026+",
+    status: "2024+",
     description:
       "We\u2019re building tools that solve real problems for African businesses and institutions. AI safety, fintech, and communication infrastructure are on the roadmap.",
     pricing: null,
