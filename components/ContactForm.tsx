@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import PhoneField from "@/components/PhoneField";
+import EmailField from "@/components/EmailField";
+import EmailVerifyModal from "@/components/EmailVerifyModal";
 
 const services = [
   "Website",
@@ -38,10 +40,14 @@ function Label({ children, required }: { children: React.ReactNode; required?: b
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [serverError, setServerError] = useState("");
+  const [verifyOpen, setVerifyOpen] = useState(false);
+  const [verifiedEmail, setVerifiedEmail] = useState<string | null>(null);
+  const [pendingData, setPendingData] = useState<ContactFormData | null>(null);
 
-  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<ContactFormData>();
+  const { register, handleSubmit, reset, control, setValue, watch, formState: { errors } } = useForm<ContactFormData>();
+  const emailValue = watch("email");
 
-  const onSubmit = async (data: ContactFormData) => {
+  const submitContact = async (data: ContactFormData) => {
     setStatus("sending");
     setServerError("");
     try {
@@ -56,9 +62,27 @@ export default function ContactForm() {
       }
       setStatus("sent");
       reset();
+      setVerifiedEmail(null);
     } catch (err) {
       setStatus("error");
       setServerError(err instanceof Error ? err.message : "Failed to send message");
+    }
+  };
+
+  const onSubmit = (data: ContactFormData) => {
+    if (verifiedEmail !== data.email) {
+      setPendingData(data);
+      setVerifyOpen(true);
+      return;
+    }
+    submitContact(data);
+  };
+
+  const onEmailVerified = () => {
+    setVerifyOpen(false);
+    if (pendingData) {
+      setVerifiedEmail(pendingData.email);
+      submitContact(pendingData);
     }
   };
 
@@ -147,14 +171,23 @@ export default function ContactForm() {
           {/* Email */}
           <div>
             <Label required>Email address</Label>
-            <input
-              type="email"
-              placeholder="ama@business.com"
-              {...register("email", {
+            <Controller
+              name="email"
+              control={control}
+              rules={{
                 required: "Email is required",
                 pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email" },
-              })}
-              className={`${inputBase} ${errors.email ? "border-red-500" : "border-white/10 focus:border-[var(--color-accent)]/50"}`}
+              }}
+              render={({ field }) => (
+                <EmailField
+                  {...field}
+                  placeholder="ama@business.com"
+                  hasError={!!errors.email}
+                  verified={verifiedEmail === emailValue && !!emailValue}
+                  onApplySuggestion={(c) => setValue("email", c, { shouldValidate: true })}
+                  className={`${inputBase} ${errors.email ? "border-red-500" : "border-white/10 focus:border-[var(--color-accent)]/50"}`}
+                />
+              )}
             />
             {errors.email && <p className="text-red-400 text-[12px] mt-1">{errors.email.message}</p>}
           </div>
@@ -223,6 +256,13 @@ export default function ContactForm() {
           {status === "sending" ? "Sending..." : "Send message →"}
         </button>
       </form>
+
+      <EmailVerifyModal
+        open={verifyOpen}
+        email={pendingData?.email ?? ""}
+        onClose={() => setVerifyOpen(false)}
+        onVerified={onEmailVerified}
+      />
     </div>
   );
 }

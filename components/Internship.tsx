@@ -7,6 +7,8 @@
 import { useState, useCallback, useEffect, type ChangeEvent } from "react"
 import Nav from "@/components/Nav"
 import PhoneField from "@/components/PhoneField"
+import EmailField from "@/components/EmailField"
+import EmailVerifyModal from "@/components/EmailVerifyModal"
 
 // ─── API config ───────────────────────────────────────────────────────────────
 // Default to production. Override with NEXT_PUBLIC_API_URL in .env.local for dev.
@@ -150,8 +152,8 @@ function Field({ label, required, hint, error, children }: {
 }
 
 // ─── Step 1: Personal ─────────────────────────────────────────────────────────
-function StepPersonal({ data, errors, onChange }: {
-  data: FormData; errors: Errors; onChange: (k: keyof FormData, v: string) => void
+function StepPersonal({ data, errors, onChange, verifiedEmail }: {
+  data: FormData; errors: Errors; onChange: (k: keyof FormData, v: string) => void; verifiedEmail: string | null
 }) {
   const f = (k: keyof FormData) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => onChange(k, e.target.value)
   return (
@@ -160,7 +162,15 @@ function StepPersonal({ data, errors, onChange }: {
         <input className={inputCls(!!errors.full_name)} value={data.full_name} onChange={f("full_name")} placeholder="Ada Boahen" autoComplete="name" />
       </Field>
       <Field label="Email address" required error={errors.email}>
-        <input type="email" className={inputCls(!!errors.email)} value={data.email} onChange={f("email")} placeholder="ada@example.com" autoComplete="email" />
+        <EmailField
+          className={inputCls(!!errors.email)}
+          value={data.email}
+          onChange={f("email")}
+          placeholder="ada@example.com"
+          hasError={!!errors.email}
+          verified={verifiedEmail === data.email && !!data.email}
+          onApplySuggestion={(corrected) => onChange("email", corrected)}
+        />
       </Field>
       <Field label="Phone number" required error={errors.phone}>
         <PhoneField value={data.phone} onChange={(val) => onChange("phone", val)} error={!!errors.phone} />
@@ -415,6 +425,8 @@ export default function BFAMInternshipPage() {
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [stats, setStats] = useState<Stats>({ applications: 0, schools: 0, roles: 8 })
+  const [verifyOpen, setVerifyOpen] = useState(false)
+  const [verifiedEmail, setVerifiedEmail] = useState<string | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -451,7 +463,7 @@ export default function BFAMInternshipPage() {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  const handleSubmit = async () => {
+  const submitApplication = async () => {
     setSubmitting(true)
     setSubmitError(null)
     try {
@@ -477,6 +489,20 @@ export default function BFAMInternshipPage() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const handleSubmit = () => {
+    if (verifiedEmail !== form.email) {
+      setVerifyOpen(true)
+      return
+    }
+    submitApplication()
+  }
+
+  const onEmailVerified = () => {
+    setVerifyOpen(false)
+    setVerifiedEmail(form.email)
+    submitApplication()
   }
 
   const isLastStep = step === 4
@@ -634,7 +660,7 @@ export default function BFAMInternshipPage() {
 
                     {/* Card body — key={step} triggers re-animation on step change */}
                     <div key={step} className="px-6 py-6 step-enter">
-                      {step === 1 && <StepPersonal data={form} errors={errors} onChange={onChange} />}
+                      {step === 1 && <StepPersonal data={form} errors={errors} onChange={onChange} verifiedEmail={verifiedEmail} />}
                       {step === 2 && <StepAcademic data={form} errors={errors} onChange={onChange} />}
                       {step === 3 && <StepInterests data={form} errors={errors} onChange={onChange} onToggleInterest={onToggleInterest} />}
                       {step === 4 && <StepReview data={form} />}
@@ -729,6 +755,13 @@ export default function BFAMInternshipPage() {
           </main>
         </div>
       </div>
+
+      <EmailVerifyModal
+        open={verifyOpen}
+        email={form.email}
+        onClose={() => setVerifyOpen(false)}
+        onVerified={onEmailVerified}
+      />
     </>
   )
 }
