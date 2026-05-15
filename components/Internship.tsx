@@ -145,12 +145,19 @@ function validateStep(step: number, data: FormData): Errors {
 }
 
 // ─── Input styles ─────────────────────────────────────────────────────────────
-function inputCls(hasError = false) {
+function inputCls(hasError = false, isSelect = false) {
   return [
     "w-full px-4 py-3 text-sm rounded-xl",
     "bg-[var(--color-bg)] text-ink placeholder:text-ink-faint",
     "border transition-all duration-200 outline-none",
     "focus:ring-2 focus:ring-accent/20",
+    // Selects: force the native dropdown chrome back on. Tailwind v4's
+    // preflight resets appearance which makes the picker not open on
+    // some Chromium / Safari builds. Also pad-right so the chevron
+    // glyph doesn't sit on top of the chosen value's text.
+    isSelect
+      ? "appearance-auto cursor-pointer pr-10"
+      : "",
     hasError
       ? "border-red-500/60 focus:border-red-400/80"
       : "border-[var(--line-strong)] focus:border-accent/60",
@@ -208,7 +215,7 @@ function StepPersonal({ data, errors, onChange, verifiedEmail }: {
         <PhoneField value={data.phone} onChange={(val) => onChange("phone", val)} error={!!errors.phone} />
       </Field>
       <Field label="Experience level" required error={errors.experience_level}>
-        <select className={inputCls(!!errors.experience_level)} value={data.experience_level} onChange={f("experience_level")}>
+        <select className={inputCls(!!errors.experience_level, true)} value={data.experience_level} onChange={f("experience_level")}>
           <option value="">Select…</option>
           {EXPERIENCE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -237,13 +244,13 @@ function StepAcademic({ data, errors, onChange }: {
         <input className={inputCls(!!errors.program_of_study)} value={data.program_of_study} onChange={f("program_of_study")} placeholder="Computer Science" />
       </Field>
       <Field label="Level / Year" required error={errors.level}>
-        <select className={inputCls(!!errors.level)} value={data.level} onChange={f("level")}>
+        <select className={inputCls(!!errors.level, true)} value={data.level} onChange={f("level")}>
           <option value="">Select…</option>
           {LEVEL_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </Field>
       <Field label="Academic status" required error={errors.academic_status}>
-        <select className={inputCls(!!errors.academic_status)} value={data.academic_status} onChange={f("academic_status")}>
+        <select className={inputCls(!!errors.academic_status, true)} value={data.academic_status} onChange={f("academic_status")}>
           <option value="">Select…</option>
           {ACADEMIC_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
