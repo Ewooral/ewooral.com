@@ -73,7 +73,7 @@ const PLANS: {
     name: "Starter",
     price: "GH₵ 80",
     period: "/ month",
-    blurb: "Single-location salons doing 1–2 stylists.",
+    blurb: "Single-location businesses with 1–2 staff.",
     features: [
       "30 bookings/month",
       "3 staff members",
@@ -88,7 +88,7 @@ const PLANS: {
     name: "Pro",
     price: "GH₵ 200",
     period: "/ month",
-    blurb: "Growing salons that want analytics + segmentation.",
+    blurb: "Growing businesses that want analytics + segmentation.",
     features: [
       "Unlimited bookings",
       "Unlimited staff",
@@ -243,7 +243,7 @@ export default function AhofeProductPage() {
               What's inside
             </div>
             <h2 className="font-display font-bold text-3xl md:text-4xl leading-tight max-w-2xl mx-auto">
-              Everything you need to run a busy salon — in your phone.
+              Everything you need to run your business — in your phone.
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
