@@ -34,11 +34,12 @@ interface FormData {
 type Errors = Partial<Record<keyof FormData, string>>
 
 // ─── Constants ────────────────────────────────────────────────────────────────
+// Open intern roles for this cycle. Update here when new roles open.
 const INTEREST_OPTIONS = [
-  "Software Engineering", "AI / Machine Learning", "Product Design",
-  "Backend Systems", "Web Platforms", "Mobile Development",
-  "Data & Analytics", "Brand & Marketing", "Social Media",
-  "Business Development", "Finance & Fintech", "Content Writing",
+  "Marketing",
+  "Social Media",
+  "Content Creation",
+  "Research",
 ]
 
 const EXPERIENCE_OPTIONS: { value: ExperienceLevel; label: string }[] = [
@@ -88,6 +89,37 @@ const PERKS = [
   "Real ownership, not busy work",
   "Path to a full-time offer",
 ]
+
+// ─── Error parsing ────────────────────────────────────────────────────────────
+// Backend speaks 3 different error shapes depending on which path failed:
+//   1. App-wrapped:   { success:false, error:{ code, message, details } }
+//   2. FastAPI 422:   { detail: [ { loc, msg, type }, ... ] }
+//   3. Plain string:  { detail: "Invalid input" }   ← previously unhelpful
+function extractErrorMessage(err: unknown, status: number): string {
+  if (!err || typeof err !== "object") {
+    return `Submission failed (HTTP ${status}). Please try again.`
+  }
+  const e = err as Record<string, unknown>
+  // Wrapped error envelope
+  const wrapped = e.error as Record<string, unknown> | undefined
+  if (wrapped?.message && typeof wrapped.message === "string") {
+    return wrapped.message
+  }
+  // FastAPI 422 — array of field errors
+  if (Array.isArray(e.detail)) {
+    const fields = (e.detail as Array<Record<string, unknown>>)
+      .map((f) => {
+        const loc = Array.isArray(f.loc) ? (f.loc.filter((x) => x !== "body") as string[]).join(".") : ""
+        const msg = typeof f.msg === "string" ? f.msg : "invalid"
+        return loc ? `${loc.replace(/_/g, " ")}: ${msg}` : msg
+      })
+      .filter(Boolean)
+    if (fields.length) return fields.join(" · ")
+  }
+  // Plain string detail
+  if (typeof e.detail === "string") return e.detail
+  return "Submission failed. Please try again."
+}
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 function validateStep(step: number, data: FormData): Errors {
@@ -481,8 +513,8 @@ export default function BFAMInternshipPage() {
         setSubmitted(true)
         window.scrollTo({ top: 0, behavior: "smooth" })
       } else {
-        const err = await res.json().catch(() => ({ detail: "Something went wrong." }))
-        setSubmitError(err.detail ?? err.error?.message ?? "Submission failed. Please try again.")
+        const err = await res.json().catch(() => null)
+        setSubmitError(extractErrorMessage(err, res.status))
       }
     } catch {
       setSubmitError("Network error. Please check your connection and try again.")
@@ -706,14 +738,14 @@ export default function BFAMInternshipPage() {
 
                       <div className="flex items-center gap-3">
                         {step > 1 && (
-                          <span className="text-[11px] font-mono text-ink-faint">Step {step} of 4</span>
+                          <span className="hidden sm:inline text-[11px] font-mono text-ink-faint">Step {step} of 4</span>
                         )}
                         {isLastStep ? (
                           <button
                             type="button"
                             onClick={handleSubmit}
                             disabled={submitting}
-                            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold bg-accent text-bg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-accent text-bg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                             style={{ boxShadow: submitting ? "none" : "0 4px 16px rgba(245,184,32,0.3)" }}
                           >
                             {submitting ? (
@@ -737,7 +769,7 @@ export default function BFAMInternshipPage() {
                           <button
                             type="button"
                             onClick={goNext}
-                            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold bg-accent text-bg transition-all duration-200 hover:brightness-105"
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-accent text-bg transition-all duration-200 hover:brightness-105 whitespace-nowrap"
                             style={{ boxShadow: "0 4px 14px rgba(245,184,32,0.28)" }}
                           >
                             {step === 3 ? "Review & submit" : step === 1 ? "Academic details" : "Interests"}
