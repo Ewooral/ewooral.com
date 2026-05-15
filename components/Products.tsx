@@ -3,18 +3,18 @@ const products = [
     name: "Aho\u0254f\u025B",
     status: "Live",
     description:
-      "Booking and business management for salons, barbershops, clinics, and tailors across Africa. Customers book online via a WhatsApp-shareable link. Owners manage bookings, revenue, and customers from their phone.",
+      "Stop tracking 'is 2pm free?' messages in your WhatsApp DMs. Aho\u0254f\u025B gives salons, barbers, braiders, and clinics one link customers tap to book \u2014 and a phone-friendly dashboard to run the rest of the day. MoMo deposits, automatic reminders, AI insights on the higher tiers.",
     pricing: "From GH\u20B5 0/month",
-    tags: ["Booking", "SaaS", "WhatsApp", "AI"],
+    tags: ["Booking", "WhatsApp", "MoMo", "AI"],
     href: "/products/ahofe",
   },
   {
     name: "PENT-OS",
     status: "Pilot",
     description:
-      "Church and school management platform \u2014 membership, attendance, giving, pastoral care, and school administration in one system. Built for The Church of Pentecost, designed for any denomination.",
+      "Church and school management in one system \u2014 membership, attendance, giving, pastoral care. Currently being built for The Church of Pentecost (East Legon Worship Centre pilot), designed to scale to any denomination.",
     pricing: null,
-    tags: ["Church", "School", "SaaS"],
+    tags: ["Church", "School", "MoMo"],
     href: null,
   },
   {

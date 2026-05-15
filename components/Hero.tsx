@@ -22,11 +22,14 @@ export default function Hero() {
               </span>
             </h1>
 
-            <p className="reveal reveal-d3 text-[18px] text-ink-dim max-w-[480px] mb-11 leading-[1.6]">
-              We build products that solve real problems &mdash; from AI safety
-              tools to digital infrastructure. We also help Ghanaian
-              professionals and businesses establish serious online presence
-              through our agency arm.
+            <p className="reveal reveal-d3 text-[18px] text-ink-dim max-w-[520px] mb-11 leading-[1.6]">
+              <strong className="text-ink font-semibold">Ahoɔfɛ</strong> &mdash;
+              our booking and business platform for African salons, barbers, and
+              clinics &mdash; is live.{" "}
+              <strong className="text-ink font-semibold">PENT-OS</strong>{" "}
+              &mdash; church and school management &mdash; is in pilot with The
+              Church of Pentecost. Our agency arm builds serious web presence
+              for Ghanaian professionals on the side.
             </p>
 
             <div className="reveal reveal-d4 flex gap-5 items-center flex-wrap">
