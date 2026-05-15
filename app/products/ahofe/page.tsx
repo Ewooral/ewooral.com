@@ -11,8 +11,9 @@ export const metadata: Metadata = {
 
 const APK_URL = "https://cdn.ewooral.com/apps/ahofe-mobile.apk";
 const REGISTER_URL = "https://ahofe.ewooral.com/register";
+// UK number is the canonical Ewooral & BFAM contact — matches Footer, FinalCTA, WhatsAppFloat
 const WHATSAPP_URL =
-  "https://wa.me/233546313876?text=Hi%2C%20I%20want%20to%20learn%20more%20about%20Aho%C9%94f%C9%9B";
+  "https://wa.me/447888374946?text=Hi%2C%20I%20want%20to%20learn%20more%20about%20Aho%C9%94f%C9%9B";
 
 const FEATURES: { icon: string; title: string; body: string }[] = [
   {
@@ -47,6 +48,9 @@ const FEATURES: { icon: string; title: string; body: string }[] = [
   },
 ];
 
+const SALES_WA_URL =
+  "https://wa.me/447888374946?text=Hi%2C%20I%27d%20like%20to%20discuss%20Aho%C9%94f%C9%9B%20Business%20tier%20for%20my%20company.";
+
 const PLANS: {
   name: string;
   price: string;
@@ -54,6 +58,8 @@ const PLANS: {
   blurb: string;
   features: string[];
   cta: string;
+  /** When set, the CTA opens this URL instead of the register URL. */
+  cta_href?: string;
   popular?: boolean;
 }[] = [
   {
@@ -103,9 +109,9 @@ const PLANS: {
   },
   {
     name: "Business",
-    price: "GH₵ 600",
-    period: "/ month",
-    blurb: "Multi-stylist shops + AI-powered insights.",
+    price: "Custom",
+    period: "talk to us",
+    blurb: "Multi-location, multi-stylist, AI + bespoke needs.",
     features: [
       "Everything in Pro",
       "Unlimited SMS + WhatsApp",
@@ -115,8 +121,10 @@ const PLANS: {
       "Weekly AI digest",
       "AI booking suggestions",
       "24/7 priority support",
+      "Multi-location + custom branding",
     ],
-    cta: "Choose Business",
+    cta: "Talk to sales",
+    cta_href: SALES_WA_URL,
   },
 ];
 
@@ -265,6 +273,86 @@ export default function AhofeProductPage() {
         </div>
       </section>
 
+      {/* ─── Built for (segment showcase) ─────────────────── */}
+      <section className="px-6 md:px-10 py-16 md:py-20 border-t border-line">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent mb-3">
+              Built for
+            </div>
+            <h2 className="font-display font-bold text-3xl md:text-4xl leading-tight max-w-2xl mx-auto mb-3">
+              The businesses that live in WhatsApp.
+            </h2>
+            <p className="text-ink-dim max-w-xl mx-auto">
+              Whether you take 5 bookings a week or 50 a day, Ahoɔfɛ adapts to
+              your day. A small but representative slice of who&apos;s here:
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              {
+                icon: "💇🏾",
+                label: "Salons & barbershops",
+                body: "Multi-stylist shops, walk-in queues, deposits to cut no-shows.",
+              },
+              {
+                icon: "🌿",
+                label: "Braiders & locticians",
+                body: "Long-form appointments with a clear duration and price up-front.",
+              },
+              {
+                icon: "💅🏾",
+                label: "Nail studios & lash bars",
+                body: "Fast turnover, double-booking blocked at the slot level.",
+              },
+              {
+                icon: "💆🏾",
+                label: "Medspas & wellness clinics",
+                body: "Multi-room allocation, intake notes, automated reminders.",
+              },
+              {
+                icon: "💄",
+                label: "Mobile MUAs & bridal teams",
+                body: "Wedding-season deposit locks, travel-fee fields, peak-day blocks.",
+              },
+              {
+                icon: "📸",
+                label: "Photographers, tutors, service pros",
+                body: "Anyone who runs an appointment-driven business from a phone.",
+              },
+            ].map((s) => (
+              <div
+                key={s.label}
+                className="p-6 rounded-2xl"
+                style={{
+                  background: "var(--color-bg-2)",
+                  border: "1px solid var(--line)",
+                }}
+              >
+                <div className="text-[26px] mb-3">{s.icon}</div>
+                <h3 className="font-display font-semibold text-lg mb-1.5">
+                  {s.label}
+                </h3>
+                <p className="text-sm text-ink-dim leading-relaxed">{s.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10 font-mono text-[11px] text-ink-faint">
+            Don&apos;t see your business?{" "}
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:underline"
+            >
+              Ask us on WhatsApp →
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ─── Pricing ──────────────────────────────────────── */}
       <section
         className="px-6 md:px-10 py-16 md:py-24 border-t border-line"
@@ -319,17 +407,33 @@ export default function AhofeProductPage() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href={REGISTER_URL}
-                  className="block text-center px-4 py-2.5 rounded-xl font-mono text-[11px] uppercase tracking-[0.18em] transition-all"
-                  style={
-                    p.popular
-                      ? { background: "var(--color-accent)", color: "var(--color-bg)" }
-                      : { border: "1px solid var(--line-strong)", color: "var(--color-ink)" }
-                  }
-                >
-                  {p.cta}
-                </Link>
+                {p.cta_href ? (
+                  <a
+                    href={p.cta_href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-center px-4 py-2.5 rounded-xl font-mono text-[11px] uppercase tracking-[0.18em] transition-all"
+                    style={
+                      p.popular
+                        ? { background: "var(--color-accent)", color: "var(--color-bg)" }
+                        : { border: "1px solid var(--line-strong)", color: "var(--color-ink)" }
+                    }
+                  >
+                    {p.cta}
+                  </a>
+                ) : (
+                  <Link
+                    href={REGISTER_URL}
+                    className="block text-center px-4 py-2.5 rounded-xl font-mono text-[11px] uppercase tracking-[0.18em] transition-all"
+                    style={
+                      p.popular
+                        ? { background: "var(--color-accent)", color: "var(--color-bg)" }
+                        : { border: "1px solid var(--line-strong)", color: "var(--color-ink)" }
+                    }
+                  >
+                    {p.cta}
+                  </Link>
+                )}
               </div>
             ))}
           </div>

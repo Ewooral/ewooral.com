@@ -155,13 +155,17 @@ export default function Nav() {
         </button>
       </div>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu overlay.
+          Tailwind v4 can't apply /alpha to plain-hex CSS vars (--color-bg is
+          a hex), so `bg-bg/98` compiles but produces no fill → transparent
+          sheet. Set background explicitly. */}
       <div
-        className={`md:hidden fixed inset-0 top-[60px] bg-bg/98 backdrop-blur-xl transition-all duration-300 ${
+        className={`md:hidden fixed inset-0 top-[60px] backdrop-blur-xl transition-all duration-300 ${
           menuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
+        style={{ background: "var(--color-bg)" }}
       >
         <ul className="flex flex-col items-center gap-8 pt-16 list-none">
           {links.map((l) => {
