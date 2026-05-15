@@ -6,7 +6,7 @@ const products = [
       "Booking and business management for salons, barbershops, clinics, and tailors across Africa. Customers book online via a WhatsApp-shareable link. Owners manage bookings, revenue, and customers from their phone.",
     pricing: "From GH\u20B5 0/month",
     tags: ["Booking", "SaaS", "WhatsApp", "AI"],
-    href: "https://ahofe.ewooral.com",
+    href: "/products/ahofe",
   },
   {
     name: "PENT-OS",
@@ -54,10 +54,15 @@ export default function Products() {
         <div className="grid md:grid-cols-3 gap-6">
           {products.map((p) => {
             const Card = p.href ? "a" : "div";
+            const isExternal = p.href?.startsWith("http");
             return (
               <Card
                 key={p.name}
-                {...(p.href ? { href: p.href, target: "_blank", rel: "noopener noreferrer" } : {})}
+                {...(p.href
+                  ? isExternal
+                    ? { href: p.href, target: "_blank", rel: "noopener noreferrer" }
+                    : { href: p.href }
+                  : {})}
                 className={`border border-line rounded-[4px] p-8 transition-all duration-300 hover:border-accent/40 hover:bg-accent/[0.02] flex flex-col no-underline ${
                   p.href ? "hover:-translate-y-1 cursor-pointer" : ""
                 }`}
