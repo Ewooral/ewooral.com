@@ -62,9 +62,9 @@ const PLANS: {
     period: "forever",
     blurb: "For new businesses just getting started.",
     features: [
-      "10 bookings/month",
+      "5 bookings/month",
       "1 staff member",
-      "3 services",
+      "5 services",
       "Booking link to share on WhatsApp",
     ],
     cta: "Start free",
