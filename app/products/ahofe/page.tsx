@@ -51,6 +51,15 @@ const FEATURES: { icon: string; title: string; body: string }[] = [
 const SALES_WA_URL =
   "https://wa.me/447888374946?text=Hi%2C%20I%27d%20like%20to%20discuss%20Aho%C9%94f%C9%9B%20Business%20tier%20for%20my%20company.";
 
+/**
+ * Pricing tiers — values mirror Ahofe's canonical tier matrix
+ * (`bfam-audit-agent/product/ahofe/070-tier-feature-matrix-canonical-
+ * linux-2026-05-18.md` + GET https://bfam-backend-api.ewooral.com/api/v1/
+ * ahofe/tier-matrix). This is a marketing page on a separate codebase from
+ * ahofe-app — it doesn't share the live matrix hook. Treat as a static
+ * mirror and review against the matrix every sprint, or convert to a
+ * server-side fetch with `revalidate: 3600` for drift-proof rendering.
+ */
 const PLANS: {
   name: string;
   price: string;
@@ -68,7 +77,7 @@ const PLANS: {
     period: "forever",
     blurb: "For new businesses just getting started.",
     features: [
-      "5 bookings/month",
+      "50 bookings/month",
       "1 staff member",
       "5 services",
       "Booking link to share on WhatsApp",
@@ -81,12 +90,12 @@ const PLANS: {
     period: "/ month",
     blurb: "Single-location businesses with 1–2 staff.",
     features: [
-      "30 bookings/month",
+      "Unlimited bookings",
       "3 staff members",
       "10 services",
-      "50 SMS + WhatsApp / month",
-      "Email notifications",
-      "Dashboard & stats",
+      "200 SMS / month",
+      "Reviews v2 — owner reply + moderation",
+      "Everything in Free",
     ],
     cta: "Choose Starter",
   },
@@ -96,32 +105,47 @@ const PLANS: {
     period: "/ month",
     blurb: "Growing businesses that want analytics + segmentation.",
     features: [
-      "Unlimited bookings",
-      "Unlimited staff",
-      "Unlimited services",
-      "100 SMS + WhatsApp / month",
-      "Customer segments (VIP, at-risk, new)",
+      "10 staff members",
+      "3 locations",
+      "500 SMS / month",
+      "MoMo deposits & online pay",
+      "Photo gallery on booking page",
+      "Customer segments (VIP / at-risk)",
       "Stylist performance leaderboard",
       "Revenue analytics + CSV export",
+      "Everything in Starter",
     ],
     cta: "Choose Pro",
     popular: true,
   },
   {
-    name: "Business",
-    price: "Custom",
-    period: "talk to us",
-    blurb: "Multi-location, multi-stylist, AI + bespoke needs.",
+    name: "Pro+",
+    price: "GH₵ 350",
+    period: "/ month",
+    blurb: "Established businesses ready for AI + unlimited staff.",
     features: [
-      "Everything in Pro",
-      "Unlimited SMS + WhatsApp",
+      "Unlimited staff",
+      "1,000 SMS / month",
       "No-show risk predictor",
-      "Revenue forecasting",
-      "Customer lifetime value",
-      "Weekly AI digest",
-      "AI booking suggestions",
-      "24/7 priority support",
-      "Multi-location + custom branding",
+      "Public REST API (read-only)",
+      "Everything in Pro",
+    ],
+    cta: "Choose Pro+",
+  },
+  {
+    name: "Business",
+    price: "GH₵ 600",
+    period: "/ month",
+    blurb: "Multi-location chains and bespoke needs.",
+    features: [
+      "Unlimited locations",
+      "Unlimited SMS",
+      "Full AI suite — demand forecast, CLV, revenue forecast, weekly digest",
+      "Custom RBAC roles",
+      "Multi-location dashboard",
+      "Priority Roadmap Input",
+      "White-label",
+      "Everything in Pro+",
     ],
     cta: "Talk to sales",
     cta_href: SALES_WA_URL,
@@ -371,7 +395,7 @@ export default function AhofeProductPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {PLANS.map((p) => (
               <div
                 key={p.name}
