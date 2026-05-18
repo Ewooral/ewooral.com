@@ -48,8 +48,26 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           command_timeout: 10m
           script: |
+            set -euo pipefail
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker pull ${{ env.IMAGE }}
+
+            # Retry pull — ghcr.io occasionally drops mid-layer ('connection
+            # reset' or containerd commit error). Without this, the script
+            # used to continue past the failure and restart the OLD image,
+            # leaving the deploy silently green.
+            for attempt in 1 2 3 4 5; do
+              if docker pull ${{ env.IMAGE }}; then
+                echo "Pull succeeded on attempt $attempt"
+                break
+              fi
+              if [ "$attempt" = "5" ]; then
+                echo "FATAL: docker pull failed after 5 attempts — aborting deploy"
+                exit 1
+              fi
+              echo "Pull attempt $attempt failed — retrying in 10s"
+              sleep 10
+            done
+
             cd ~/apps/ewooral-site
             git fetch origin && git reset --hard origin/main
             docker compose up -d --force-recreate --pull always web
