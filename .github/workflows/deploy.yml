@@ -3,6 +3,16 @@ name: Deploy to VPS
 on:
   push:
     branches: [main]
+    # CI minutes thrift — push events that ONLY touch the paths below
+    # are skipped (zero billing, no workflow row in Actions). Mixed
+    # pushes (docs + code) still fire normally.
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.gitignore'
+      - 'LICENSE*'
+      - '.editorconfig'
+      - '.gitattributes'
 
 concurrency:
   group: deploy-site
