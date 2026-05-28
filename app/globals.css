@@ -1,14 +1,24 @@
 @import "tailwindcss";
 
-/* === Design tokens — generates utility classes (bg-bg, text-ink, text-accent, etc.) === */
+/* === Design tokens — generates utility classes (bg-bg, text-ink, text-accent, etc.) ===
+   12 slots match the platform-wide /api/v1/branding/colors contract
+   (spec doc 116). The server-side fetch in app/layout.tsx overrides
+   these via an inline <style> block in <head>. These values are the
+   FALLBACK when the API is unreachable. */
 @theme {
   --color-bg: #1a3a2a;
   --color-bg-2: #142a1e;
+  --color-bg-3: #0e1d14;       /* NEW per spec — pressed surface */
   --color-ink: #f5f1e8;
   --color-ink-dim: #a8a39a;
   --color-ink-faint: #6b6760;
   --color-accent: #f5b820;
-  --color-accent-deep: #d99500;
+  --color-accent-soft: #d99500; /* renamed from -deep to match spec; -deep kept as legacy alias below */
+  --color-accent-deep: #d99500; /* legacy — existing components reference this; preserved */
+  --color-line: rgba(245, 241, 232, 0.08); /* moved from :root → @theme for spec contract */
+  --color-sage: #2A7A4A;        /* NEW per spec — positive semantic */
+  --color-rose: #C0413A;        /* NEW per spec — negative semantic */
+  --color-info: #356B8A;        /* NEW per spec — informational semantic */
 
   --font-display: "Bricolage Grotesque", sans-serif;
   --font-serif: "Instrument Serif", serif;
@@ -17,7 +27,8 @@
 
 /* Make CSS variables available outside @theme too, for arbitrary values and custom CSS */
 :root {
-  --line: rgba(245, 241, 232, 0.08);
+  /* --line legacy alias — existing components reference `var(--line)`; new code uses --color-line */
+  --line: var(--color-line);
   --line-strong: rgba(245, 241, 232, 0.15);
 }
 
