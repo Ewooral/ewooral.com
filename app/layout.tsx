@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import { fetchBranding, brandingStyleBlock } from "@/lib/branding";
 
 export const metadata: Metadata = {
   title: "Ewooral & BFAM Holdings — Technology for African Businesses",
@@ -49,12 +50,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Operator-driven branding — spec doc 116. Falls back to globals.css defaults if API errors.
+  const branding = await fetchBranding();
+
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
+        {branding && (
+          <style
+            id="branding-colors"
+            dangerouslySetInnerHTML={{ __html: brandingStyleBlock(branding.colors) }}
+          />
+        )}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem("ewooral_theme");if(t==="default"||t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);else document.documentElement.setAttribute("data-theme","light")}catch(e){document.documentElement.setAttribute("data-theme","light")}})()` }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
