@@ -138,6 +138,164 @@ html {
   }
 }
 
+/* === Blog post typography (per audit doc 122) ===
+   Editorial styling — comfortable measure, generous line-height, restrained
+   section headings that don't inherit the marketing-hero clamp() sizes from
+   the @layer base block above. */
+.prose-blog {
+  font-size: clamp(17px, 1.2vw, 19px);
+  line-height: 1.75;
+  color: var(--color-ink);
+  font-feature-settings: "kern", "liga", "calt", "onum";
+  /* Optimal editorial measure — keeps line length ~65-72ch even on wider
+     container, so the wider column doesn't degrade readability. */
+  max-width: 72ch;
+  margin-inline: auto;
+}
+.prose-blog p,
+.prose-blog ul,
+.prose-blog ol {
+  margin-bottom: 1.35rem;
+  color: var(--color-ink-dim);
+}
+.prose-blog ul,
+.prose-blog ol {
+  padding-left: 1.5rem;
+}
+.prose-blog li {
+  margin-bottom: 0.6rem;
+  color: var(--color-ink-dim);
+}
+.prose-blog strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.prose-blog a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 200ms ease;
+}
+.prose-blog a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+/* Lead paragraph + drop cap — only fires on first .lead-drop-cap */
+.prose-blog .lead-drop-cap {
+  font-size: clamp(19px, 1.4vw, 22px);
+  line-height: 1.6;
+  color: var(--color-ink);
+  margin-bottom: 2rem;
+}
+.prose-blog .lead-drop-cap::first-letter {
+  font-family: var(--font-serif);
+  font-size: 4.5em;
+  line-height: 0.85;
+  float: left;
+  margin: 0.08em 0.12em 0 0;
+  font-weight: 400;
+  color: var(--color-accent);
+}
+
+/* Section heading with the § marker — magazine vibe */
+.prose-blog .section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  color: var(--color-ink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+.prose-blog .section-heading-mark {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--color-accent);
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+
+/* Numbered list with oversized counters */
+.prose-blog .numbered-large {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: editorial-counter;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+.prose-blog .numbered-large > li {
+  counter-increment: editorial-counter;
+  padding-left: 3rem;
+  position: relative;
+  color: var(--color-ink-dim);
+  line-height: 1.65;
+}
+.prose-blog .numbered-large > li::before {
+  content: counter(editorial-counter, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+}
+
+/* Pull quote — break out of column, larger type, accent rule */
+.prose-blog ~ section .pull-quote,
+.pull-quote {
+  border-left: 3px solid var(--color-accent);
+  padding: 0.5rem 0 0.5rem 1.75rem;
+  margin: 0;
+}
+.pull-quote p {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  margin-bottom: 1rem;
+}
+.pull-quote footer {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+/* Sign-off */
+.prose-blog .signature {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--color-ink);
+  margin-top: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Tier-card lift on hover */
+.tier-card:hover {
+  border-color: var(--color-accent) !important;
+  transform: translateY(-2px);
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .tier-card,
+  .tier-card:hover {
+    transform: none !important;
+    transition: border-color 200ms ease;
+  }
+}
+
 /* === Custom utilities === */
 @layer utilities {
   /* Fluid display sizes that Tailwind can't generate without a config plugin */
