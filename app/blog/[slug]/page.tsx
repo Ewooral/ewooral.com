@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ReadingProgress from "@/components/blog/ReadingProgress";
+import LikeButton from "@/components/blog/LikeButton";
+import CommentSection from "@/components/blog/CommentSection";
+import { getCurrentViewer } from "@/lib/web-identity";
 
 const PLATFORM_API =
   process.env.NEXT_PUBLIC_PLATFORM_API_URL ??
@@ -112,7 +115,7 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPost(slug);
+  const [post, viewer] = await Promise.all([getPost(slug), getCurrentViewer()]);
   if (!post) notFound();
 
   const blurb = post.dek ?? post.excerpt;
@@ -210,6 +213,22 @@ export default async function BlogDetailPage({
             </div>
           )}
 
+          <div
+            className="flex items-center justify-between flex-wrap gap-4 mt-12 pt-8 border-t"
+            style={{ borderColor: "var(--line)" }}
+          >
+            <LikeButton
+              postId={post.id}
+              slug={post.slug}
+              initialLikeCount={post.like_count ?? 0}
+              initialLiked={false}
+              signedIn={!!viewer}
+            />
+            <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-ink-faint">
+              {(post.view_count ?? 0).toLocaleString("en-GH")} reads
+            </div>
+          </div>
+
           {post.tags.length > 0 && (
             <footer
               className="mt-16 pt-8 border-t"
@@ -236,6 +255,12 @@ export default async function BlogDetailPage({
               </ul>
             </footer>
           )}
+
+          <CommentSection
+            slug={post.slug}
+            postId={post.id}
+            viewer={viewer ? { sub: viewer.sub, name: viewer.name } : null}
+          />
 
           <div className="mt-16 text-center">
             <Link

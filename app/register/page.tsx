@@ -22,7 +22,13 @@ type SearchParams = Promise<{
   next?: string;
   email?: string;
   source?: string;
+  action?: string;
 }>;
+
+const ACTION_HINTS: Record<string, string> = {
+  like: "Sign in to like this post.",
+  comment: "Sign in to join the conversation.",
+};
 
 export default async function RegisterPage({
   searchParams,
@@ -33,6 +39,8 @@ export default async function RegisterPage({
   const nextPath = typeof sp.next === "string" ? sp.next : null;
   const prefillEmail = typeof sp.email === "string" ? sp.email : "";
   const signupSource = typeof sp.source === "string" ? sp.source : "general";
+  const actionHint =
+    typeof sp.action === "string" ? ACTION_HINTS[sp.action] : null;
 
   return (
     <>
@@ -40,6 +48,18 @@ export default async function RegisterPage({
       <main className="min-h-screen pb-32 pt-28 md:pt-36">
         <section className="max-w-3xl mx-auto px-5 md:px-10">
           <header className="mb-12 md:mb-16 text-center">
+            {actionHint && (
+              <div
+                className="inline-block mb-6 px-4 py-2 rounded-full font-mono text-[11px] uppercase tracking-[0.18em]"
+                style={{
+                  background: "rgba(245,184,32,0.08)",
+                  border: "1px solid rgba(245,184,32,0.3)",
+                  color: "var(--color-accent)",
+                }}
+              >
+                {actionHint}
+              </div>
+            )}
             <div className="font-mono text-[11px] uppercase tracking-[0.3em] mb-5 text-accent">
               Ewooral · Join
             </div>
