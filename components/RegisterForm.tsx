@@ -97,13 +97,19 @@ export default function RegisterForm({
     if (prefillEmail) setValue("email", prefillEmail);
   }, [prefillEmail, setValue]);
 
-  // When success state is reached AND a next path is present, the user was
-  // mid-flow (clicked like / comment, hit register-gate). Auto-redirect them
-  // back so they can finish what they came for. When there's no next path,
-  // they signed up cold — let them read the confirmation and click through.
+  // When success state is reached, fire a window event so the Nav (which
+  // lives in the layout and doesn't re-mount on soft route changes) re-fetches
+  // /api/auth/me and picks up the freshly-set ewooral_identity cookie.
+  // Cold signups also auto-redirect to home after a brief read of the
+  // confirmation copy — the dead-end "Back to home" button left users
+  // staring at a page whose Nav still invited them to sign in.
   useEffect(() => {
-    if (status !== "sent" || !nextPath) return;
-    const t = setTimeout(() => router.push(nextPath), 1500);
+    if (status !== "sent") return;
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("ewooral:auth-changed"));
+    }
+    const dest = nextPath || "/";
+    const t = setTimeout(() => router.push(dest), 1500);
     return () => clearTimeout(t);
   }, [status, nextPath, router]);
 

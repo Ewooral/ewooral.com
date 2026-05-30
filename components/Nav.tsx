@@ -1,11 +1,21 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type Theme = "light" | "default" | "dark";
 const THEME_ORDER: Theme[] = ["light", "default", "dark"];
 const THEME_KEY = "ewooral_theme";
+
+type Viewer = {
+  sub: string;
+  name: string;
+  email: string;
+};
+
+type MeResponse =
+  | { success: true; data: { viewer: Viewer | null } }
+  | { success: false; error?: { message?: string } };
 
 function useTheme() {
   const [theme, setTheme] = useState<Theme>("light");
@@ -37,12 +47,57 @@ const links = [
 export default function Nav() {
   const [active, setActive] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [viewer, setViewer] = useState<Viewer | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
   const { theme, cycle } = useTheme();
   const pathname = usePathname();
+  const router = useRouter();
   // Non-homepage routes (e.g. /blog, /blog/[slug]) — use the URL path rather
   // than the homepage's intersection-observer state so the right nav item
   // gets highlighted.
   const isOnHomepage = pathname === "/" || pathname === "";
+
+  useEffect(() => {
+    let alive = true;
+    const refetch = () => {
+      fetch("/api/auth/me", { cache: "no-store" })
+        .then((r) => r.json() as Promise<MeResponse>)
+        .then((body) => {
+          if (alive && body.success) setViewer(body.data.viewer);
+        })
+        .catch(() => {
+          if (alive) setViewer(null);
+        });
+    };
+    refetch();
+    // Re-fetch when the user returns to the tab (cross-tab auth) and when
+    // the RegisterForm dispatches `ewooral:auth-changed` after a successful
+    // signup — Nav lives in the layout so a soft router push doesn't
+    // re-mount it, and the initial fetch fires before the cookie is set.
+    const onFocus = () => refetch();
+    const onAuth = () => refetch();
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("ewooral:auth-changed", onAuth);
+    return () => {
+      alive = false;
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("ewooral:auth-changed", onAuth);
+    };
+  }, []);
+
+  const firstName = viewer?.name.trim().split(/\s+/)[0] ?? "";
+
+  const signOut = useCallback(async () => {
+    setSigningOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      setViewer(null);
+      setMenuOpen(false);
+      router.refresh();
+    } finally {
+      setSigningOut(false);
+    }
+  }, [router]);
 
   useEffect(() => {
     const sections = document.querySelectorAll("section[id], header[id]");
@@ -119,16 +174,32 @@ export default function Nav() {
 
         {/* Desktop: sign-in + theme toggle + CTA */}
         <div className="hidden md:flex items-center gap-4">
-          <a
-            href="/register"
-            className={`text-[12px] font-medium tracking-[0.08em] uppercase no-underline transition-colors ${
-              pathname === "/register"
-                ? "text-accent"
-                : "text-ink-dim hover:text-ink"
-            }`}
-          >
-            Sign in / up
-          </a>
+          {viewer ? (
+            <div className="flex items-center gap-3">
+              <span className="max-w-[160px] truncate text-[12px] font-medium tracking-[0.08em] uppercase text-ink-dim">
+                Hi, {firstName}
+              </span>
+              <button
+                type="button"
+                onClick={signOut}
+                disabled={signingOut}
+                className="text-[12px] font-medium tracking-[0.08em] uppercase text-ink-dim hover:text-accent transition-colors disabled:opacity-50"
+              >
+                {signingOut ? "Signing out" : "Sign out"}
+              </button>
+            </div>
+          ) : (
+            <a
+              href="/register"
+              className={`text-[12px] font-medium tracking-[0.08em] uppercase no-underline transition-colors ${
+                pathname === "/register"
+                  ? "text-accent"
+                  : "text-ink-dim hover:text-ink"
+              }`}
+            >
+              Sign in / up
+            </a>
+          )}
           <button
             onClick={cycle}
             className="w-9 h-9 flex items-center justify-center text-ink-dim hover:text-accent transition-colors"
@@ -217,17 +288,33 @@ export default function Nav() {
             </a>
           </li>
           <li className="mt-2">
-            <a
-              href="/register"
-              onClick={() => setMenuOpen(false)}
-              className={`text-[15px] font-medium tracking-[0.08em] uppercase no-underline transition-colors ${
-                pathname === "/register"
-                  ? "text-accent"
-                  : "text-ink-dim hover:text-accent"
-              }`}
-            >
-              Sign in / Sign up
-            </a>
+            {viewer ? (
+              <div className="flex flex-col items-center gap-3">
+                <span className="max-w-[240px] truncate text-[15px] font-medium tracking-[0.08em] uppercase text-ink-dim">
+                  Hi, {firstName}
+                </span>
+                <button
+                  type="button"
+                  onClick={signOut}
+                  disabled={signingOut}
+                  className="text-[15px] font-medium tracking-[0.08em] uppercase text-ink-dim hover:text-accent transition-colors disabled:opacity-50"
+                >
+                  {signingOut ? "Signing out" : "Sign out"}
+                </button>
+              </div>
+            ) : (
+              <a
+                href="/register"
+                onClick={() => setMenuOpen(false)}
+                className={`text-[15px] font-medium tracking-[0.08em] uppercase no-underline transition-colors ${
+                  pathname === "/register"
+                    ? "text-accent"
+                    : "text-ink-dim hover:text-accent"
+                }`}
+              >
+                Sign in / Sign up
+              </a>
+            )}
           </li>
           <li className="mt-2">
             <button

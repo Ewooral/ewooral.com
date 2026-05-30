@@ -63,6 +63,7 @@ export default async function RootLayout({
           <style
             id="branding-colors"
             dangerouslySetInnerHTML={{ __html: brandingStyleBlock(branding.colors) }}
+            suppressHydrationWarning
           />
         )}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem("ewooral_theme");if(t==="default"||t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);else document.documentElement.setAttribute("data-theme","light")}catch(e){document.documentElement.setAttribute("data-theme","light")}})()` }} />
