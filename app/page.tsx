@@ -8,6 +8,7 @@ import Clients from "@/components/Clients";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import InternshipCTA from "@/components/InternshipCTA";
+import JoinEwooralCTA from "@/components/JoinEwooralCTA";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Hero />
       <Marquee />
       <Products />
+      <JoinEwooralCTA />
       <Services />
       <Process />
       <Clients />
