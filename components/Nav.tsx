@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
 
 type Theme = "light" | "default" | "dark";
 const THEME_ORDER: Theme[] = ["light", "default", "dark"];
@@ -29,6 +30,7 @@ const links = [
   { href: "/#services", label: "Services" },
   { href: "/#process", label: "Process" },
   { href: "/#about", label: "About" },
+  { href: "/blog", label: "Blog" },
   { href: "/#contact", label: "Contact" },
 ];
 
@@ -36,6 +38,11 @@ export default function Nav() {
   const [active, setActive] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, cycle } = useTheme();
+  const pathname = usePathname();
+  // Non-homepage routes (e.g. /blog, /blog/[slug]) — use the URL path rather
+  // than the homepage's intersection-observer state so the right nav item
+  // gets highlighted.
+  const isOnHomepage = pathname === "/" || pathname === "";
 
   useEffect(() => {
     const sections = document.querySelectorAll("section[id], header[id]");
@@ -89,7 +96,10 @@ export default function Nav() {
         {/* Desktop links */}
         <ul className="hidden md:flex gap-9 list-none text-[13px] font-medium tracking-[0.08em] uppercase">
           {links.map((l) => {
-            const isActive = active === l.href.slice(2);
+            const isAnchor = l.href.startsWith("/#");
+            const isActive = isAnchor
+              ? isOnHomepage && active === l.href.slice(2)
+              : pathname === l.href || pathname.startsWith(l.href + "/");
             return (
               <li key={l.href}>
                 <a
@@ -107,8 +117,18 @@ export default function Nav() {
           })}
         </ul>
 
-        {/* Desktop: theme toggle + CTA */}
+        {/* Desktop: sign-in + theme toggle + CTA */}
         <div className="hidden md:flex items-center gap-4">
+          <a
+            href="/register"
+            className={`text-[12px] font-medium tracking-[0.08em] uppercase no-underline transition-colors ${
+              pathname === "/register"
+                ? "text-accent"
+                : "text-ink-dim hover:text-ink"
+            }`}
+          >
+            Sign in / up
+          </a>
           <button
             onClick={cycle}
             className="w-9 h-9 flex items-center justify-center text-ink-dim hover:text-accent transition-colors"
@@ -169,7 +189,10 @@ export default function Nav() {
       >
         <ul className="flex flex-col items-center gap-8 pt-16 list-none">
           {links.map((l) => {
-            const isActive = active === l.href.slice(2);
+            const isAnchor = l.href.startsWith("/#");
+            const isActive = isAnchor
+              ? isOnHomepage && active === l.href.slice(2)
+              : pathname === l.href || pathname.startsWith(l.href + "/");
             return (
               <li key={l.href}>
                 <a
@@ -191,6 +214,19 @@ export default function Nav() {
               className="inline-block bg-accent text-bg px-8 py-4 font-bold text-[14px] tracking-[0.1em] uppercase no-underline"
             >
               Get in touch
+            </a>
+          </li>
+          <li className="mt-2">
+            <a
+              href="/register"
+              onClick={() => setMenuOpen(false)}
+              className={`text-[15px] font-medium tracking-[0.08em] uppercase no-underline transition-colors ${
+                pathname === "/register"
+                  ? "text-accent"
+                  : "text-ink-dim hover:text-accent"
+              }`}
+            >
+              Sign in / Sign up
             </a>
           </li>
           <li className="mt-2">

@@ -10,6 +10,14 @@ export default function Footer() {
           <ul className="flex flex-wrap gap-6 list-none text-[13px]">
             <li>
               <a
+                href="/register"
+                className="text-accent no-underline font-medium hover:opacity-80 transition-opacity"
+              >
+                Join Ewooral
+              </a>
+            </li>
+            <li>
+              <a
                 href="/privacy"
                 className="text-ink-dim no-underline hover:text-accent transition-colors"
               >
