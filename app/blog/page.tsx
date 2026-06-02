@@ -136,29 +136,35 @@ export default async function BlogIndexPage({
       <main className="min-h-screen pb-32">
         {/* Masthead */}
         <section className="px-5 md:px-10 pt-20 md:pt-28 max-w-6xl mx-auto">
-          <div className="flex items-baseline justify-between gap-6 flex-wrap">
+          <div
+            className="grid gap-8 md:grid-cols-[1.15fr_0.85fr] md:items-end pb-10 md:pb-14"
+            style={{ borderBottom: "1px solid var(--line)" }}
+          >
             <div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.3em] mb-4 text-accent">
+              <div className="font-mono text-[11px] uppercase tracking-[0.28em] mb-5 text-accent">
                 Ewooral · Field notes
               </div>
               <h1
                 className="font-display font-display-tight leading-[0.95]"
                 style={{
                   fontSize: "clamp(3rem, 7vw, 5.5rem)",
-                  letterSpacing: "-0.035em",
+                  letterSpacing: 0,
                 }}
               >
                 Things we&apos;ve been thinking about.
               </h1>
             </div>
-            <p
-              className="text-ink-dim leading-relaxed max-w-md text-base md:text-lg"
-              style={{ marginTop: "auto" }}
-            >
-              Product decisions, strategy, and the engineering behind Ahofe,
-              PENT-OS, ew-plug, and ewooral-icons. Written by the people who
-              build them. Honest, concrete, occasionally opinionated.
-            </p>
+            <div className="md:pl-8">
+              <p className="text-ink-dim leading-relaxed max-w-md text-base md:text-lg">
+                Product decisions, strategy, and engineering notes from the
+                people building Ahofe, PENT-OS, ew-plug, and ewooral-icons.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-faint">
+                <span className="blog-signal-chip">Product</span>
+                <span className="blog-signal-chip">Engineering</span>
+                <span className="blog-signal-chip">Strategy</span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -166,13 +172,13 @@ export default async function BlogIndexPage({
         {categories.length > 0 && (
           <nav
             aria-label="Filter by category"
-            className="px-5 md:px-10 mt-12 max-w-6xl mx-auto"
+            className="px-5 md:px-10 mt-8 max-w-6xl mx-auto"
           >
             <ul className="flex flex-wrap gap-2 list-none">
               <li>
                 <Link
                   href="/blog"
-                  className="inline-block px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] no-underline transition-colors rounded-full border"
+                  className="inline-flex items-center px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] no-underline transition-colors rounded-full border hover:border-accent"
                   style={{
                     background: !activeCategory
                       ? "var(--color-accent)"
@@ -194,7 +200,7 @@ export default async function BlogIndexPage({
                   <li key={c.id}>
                     <Link
                       href={`/blog?category=${encodeURIComponent(c.slug)}`}
-                      className="inline-block px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] no-underline transition-colors rounded-full border"
+                      className="inline-flex items-center px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] no-underline transition-colors rounded-full border hover:border-accent"
                       style={{
                         background: isActive
                           ? "var(--color-accent)"
@@ -218,106 +224,75 @@ export default async function BlogIndexPage({
 
         {/* Featured post */}
         {featured && (
-          <section className="px-5 md:px-10 mt-12 md:mt-16 max-w-6xl mx-auto">
-            <Link
-              href={`/blog/${featured.slug}`}
-              className="group block"
-              style={{
-                position: "relative",
-                borderRadius: "4px",
-                overflow: "hidden",
-              }}
-            >
-              <article
-                className="grid gap-8 md:gap-12 p-7 md:p-14"
-                style={{
-                  gridTemplateColumns: "1fr",
-                  background:
-                    "linear-gradient(135deg, rgba(245, 184, 32, 0.06) 0%, rgba(245, 184, 32, 0.02) 50%, transparent 100%)",
-                  border: "1px solid var(--line-strong)",
-                  borderRadius: "4px",
-                  transition: "border-color 200ms ease, transform 200ms ease",
-                }}
-              >
-                <header>
-                  <div className="flex items-center gap-3 mb-6 text-[11px] font-mono uppercase tracking-[0.25em]">
-                    <span
-                      className="px-2.5 py-1"
+          <section className="px-5 md:px-10 mt-12 md:mt-14 max-w-6xl mx-auto">
+            <Link href={`/blog/${featured.slug}`} className="group block">
+              <article className="blog-featured-card grid overflow-hidden md:grid-cols-[0.95fr_1.05fr]">
+                <div className="flex flex-col p-6 md:p-10 lg:p-12">
+                  <header>
+                    <div className="flex flex-wrap items-center gap-3 mb-6 text-[11px] font-mono uppercase tracking-[0.22em]">
+                      <span className="blog-featured-label">Featured</span>
+                      <span className="text-ink-faint">
+                        {labelOf(featured.category)}
+                      </span>
+                      <span className="text-ink-faint">·</span>
+                      <time
+                        dateTime={featured.published_at}
+                        className="text-ink-faint"
+                      >
+                        {fmtDate(featured.published_at)}
+                      </time>
+                    </div>
+                    <h2
+                      className="font-display font-display-tight mb-5"
                       style={{
-                        background: "var(--color-accent)",
-                        color: "var(--color-bg)",
-                        borderRadius: "2px",
+                        fontSize: "clamp(2rem, 4vw, 3.35rem)",
+                        lineHeight: 1.04,
+                        letterSpacing: 0,
                       }}
                     >
-                      Featured
-                    </span>
-                    <span className="text-ink-faint">
-                      {labelOf(featured.category)}
-                    </span>
-                    <span className="text-ink-faint">·</span>
-                    <time
-                      dateTime={featured.published_at}
-                      className="text-ink-faint"
+                      {featured.title}
+                    </h2>
+                    <p
+                      className="text-ink-dim leading-relaxed max-w-2xl"
+                      style={{
+                        fontSize: "clamp(1rem, 1.4vw, 1.16rem)",
+                        lineHeight: 1.6,
+                      }}
                     >
-                      {fmtDate(featured.published_at)}
-                    </time>
-                  </div>
-                  <h2
-                    className="font-display font-display-tight mb-5"
-                    style={{
-                      fontSize: "clamp(1.85rem, 4.5vw, 3.5rem)",
-                      lineHeight: 1.05,
-                      letterSpacing: "-0.03em",
-                    }}
-                  >
-                    {featured.title}
-                  </h2>
-                  <p
-                    className="text-ink-dim leading-relaxed max-w-2xl"
-                    style={{
-                      fontSize: "clamp(1rem, 1.6vw, 1.2rem)",
-                      lineHeight: 1.55,
-                    }}
-                  >
-                    {blurbOf(featured)}
-                  </p>
-                </header>
+                      {blurbOf(featured)}
+                    </p>
+                  </header>
+
+                  <footer className="blog-author-strip mt-8 md:mt-auto">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <AuthorAvatar name={featured.author_name} />
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-display truncate">
+                          {featured.author_name}
+                        </span>
+                        {featured.reading_minutes != null && (
+                          <span className="text-[11px] font-mono text-ink-faint">
+                            {featured.reading_minutes} min read
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="blog-read-link">
+                      Read the post
+                      <ArrowRight />
+                    </span>
+                  </footer>
+                </div>
 
                 {featured.cover_image_url && (
-                  <figure className="overflow-hidden border border-line bg-bg-2" style={{ borderRadius: "4px" }}>
+                  <figure className="blog-featured-media">
                     <img
                       src={featured.cover_image_url}
                       alt={featured.title}
-                      className="w-full aspect-[16/7] object-cover transition-transform duration-300 group-hover:scale-[1.015]"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
                     />
                   </figure>
                 )}
-
-                <footer
-                  className="flex items-center justify-between flex-wrap gap-4 pt-6 mt-2 border-t"
-                  style={{ borderColor: "var(--line)" }}
-                >
-                  <div className="flex items-center gap-3">
-                    <AuthorAvatar name={featured.author_name} />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-display">
-                        {featured.author_name}
-                      </span>
-                      {featured.reading_minutes != null && (
-                        <span className="text-[11px] font-mono text-ink-faint">
-                          {featured.reading_minutes} min read
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <span
-                    className="inline-flex items-center gap-2 text-sm font-display group-hover:gap-3 transition-all"
-                    style={{ color: "var(--color-accent)" }}
-                  >
-                    Read the post
-                    <ArrowRight />
-                  </span>
-                </footer>
               </article>
             </Link>
           </section>
@@ -325,12 +300,15 @@ export default async function BlogIndexPage({
 
         {/* Remaining posts grid */}
         {rest.length > 0 && (
-          <section className="px-5 md:px-10 mt-20 max-w-6xl mx-auto">
-            <div className="text-[11px] font-mono uppercase tracking-[0.25em] mb-8 text-ink-faint">
-              More posts
+          <section className="px-5 md:px-10 mt-16 md:mt-20 max-w-6xl mx-auto">
+            <div className="flex items-center justify-between gap-4 mb-8">
+              <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-ink-faint">
+                More posts
+              </div>
+              <div className="hidden md:block h-px flex-1 bg-line" />
             </div>
             <div
-              className="grid gap-8 md:gap-10"
+              className="grid gap-6 md:gap-7"
               style={{
                 gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
               }}
@@ -341,34 +319,43 @@ export default async function BlogIndexPage({
                   href={`/blog/${p.slug}`}
                   className="group block"
                 >
-                  <article className="flex flex-col h-full">
+                  <article className="blog-post-card flex h-full flex-col overflow-hidden">
                     {p.cover_image_url && (
-                      <div className="mb-4 overflow-hidden border border-line bg-bg-2" style={{ borderRadius: "4px" }}>
+                      <div className="blog-post-media">
                         <img
                           src={p.cover_image_url}
                           alt={p.title}
-                          className="w-full aspect-[16/9] object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]"
                         />
                       </div>
                     )}
-                    <div className="flex items-center gap-3 mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-ink-faint">
-                      <span>{labelOf(p.category)}</span>
-                      <span>·</span>
-                      <time dateTime={p.published_at}>
-                        {fmtDate(p.published_at)}
-                      </time>
+                    <div className="flex flex-1 flex-col p-5">
+                      <div className="flex flex-wrap items-center gap-3 mb-4 text-[10px] font-mono uppercase tracking-[0.18em] text-ink-faint">
+                        <span className="blog-category-chip">
+                          {labelOf(p.category)}
+                        </span>
+                        <time dateTime={p.published_at}>
+                          {fmtDate(p.published_at)}
+                        </time>
+                      </div>
+                      <h3 className="font-display text-xl md:text-2xl leading-[1.15] mb-3 group-hover:text-accent transition-colors">
+                        {p.title}
+                      </h3>
+                      <p className="text-ink-dim text-sm leading-relaxed mb-5">
+                        {blurbOf(p)}
+                      </p>
+                      <div className="mt-auto flex items-center justify-between gap-4 pt-4 border-t border-line">
+                        {p.reading_minutes != null && (
+                          <span className="text-[11px] font-mono text-ink-faint">
+                            {p.reading_minutes} min read
+                          </span>
+                        )}
+                        <span className="blog-read-link text-xs">
+                          Read
+                          <ArrowRight />
+                        </span>
+                      </div>
                     </div>
-                    <h3 className="font-display text-xl md:text-2xl leading-[1.15] mb-3 group-hover:text-accent transition-colors">
-                      {p.title}
-                    </h3>
-                    <p className="text-ink-dim text-sm leading-relaxed mb-4">
-                      {blurbOf(p)}
-                    </p>
-                    {p.reading_minutes != null && (
-                      <span className="mt-auto text-[11px] font-mono text-ink-faint">
-                        {p.reading_minutes} min read
-                      </span>
-                    )}
                   </article>
                 </Link>
               ))}
@@ -417,6 +404,108 @@ export default async function BlogIndexPage({
             </div>
           </section>
         )}
+
+      <style>{`
+        .blog-signal-chip {
+          border: 1px solid var(--line);
+          border-radius: 999px;
+          padding: 0.45rem 0.75rem;
+          background: color-mix(in oklab, var(--color-bg-2) 60%, transparent);
+        }
+        .blog-featured-card,
+        .blog-post-card {
+          border: 1px solid var(--line-strong);
+          border-radius: 8px;
+          background:
+            linear-gradient(135deg, color-mix(in oklab, var(--color-accent) 8%, transparent), transparent 42%),
+            color-mix(in oklab, var(--color-bg-2) 78%, var(--color-bg));
+          box-shadow: 0 18px 60px rgba(0, 0, 0, 0.08);
+          transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+        }
+        .blog-featured-card:hover,
+        .blog-post-card:hover {
+          border-color: color-mix(in oklab, var(--color-accent) 45%, var(--line-strong));
+          transform: translateY(-2px);
+          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.12);
+        }
+        .blog-featured-label,
+        .blog-category-chip {
+          border-radius: 999px;
+          background: color-mix(in oklab, var(--color-accent) 16%, transparent);
+          color: var(--color-accent);
+          border: 1px solid color-mix(in oklab, var(--color-accent) 32%, transparent);
+        }
+        .blog-featured-label {
+          padding: 0.45rem 0.7rem;
+        }
+        .blog-category-chip {
+          padding: 0.35rem 0.6rem;
+        }
+        .blog-featured-media,
+        .blog-post-media {
+          position: relative;
+          overflow: hidden;
+          background: var(--color-bg-2);
+        }
+        .blog-featured-media {
+          min-height: 320px;
+          border-left: 1px solid var(--line);
+        }
+        .blog-featured-media::after,
+        .blog-post-media::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        }
+        .blog-post-media {
+          aspect-ratio: 16 / 10;
+          border-bottom: 1px solid var(--line);
+        }
+        .blog-author-strip {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          border-top: 1px solid var(--line);
+          padding-top: 1.25rem;
+        }
+        .blog-read-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--color-accent);
+          font-family: var(--font-display);
+          white-space: nowrap;
+          transition: gap 180ms ease;
+        }
+        .group:hover .blog-read-link {
+          gap: 0.75rem;
+        }
+        [data-theme="light"] .blog-featured-card,
+        [data-theme="light"] .blog-post-card {
+          background:
+            linear-gradient(135deg, rgba(217, 149, 0, 0.08), transparent 44%),
+            #fffdfa;
+          box-shadow: 0 18px 50px rgba(28, 28, 26, 0.07);
+        }
+        [data-theme="light"] .blog-author-strip {
+          background: transparent;
+          color: var(--color-ink);
+        }
+        @media (max-width: 767px) {
+          .blog-featured-media {
+            min-height: 240px;
+            border-left: 0;
+            border-top: 1px solid var(--line);
+          }
+          .blog-author-strip {
+            align-items: flex-start;
+            flex-direction: column;
+          }
+        }
+      `}</style>
       </main>
       <Footer />
     </>
