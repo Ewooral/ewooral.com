@@ -14,6 +14,10 @@ const REGISTER_URL = "https://ahofe.ewooral.com/register";
 // UK number is the canonical Ewooral & BFAM contact — matches Footer, FinalCTA, WhatsAppFloat
 const WHATSAPP_URL =
   "https://wa.me/447888374946?text=Hi%2C%20I%20want%20to%20learn%20more%20about%20Aho%C9%94f%C9%9B";
+const PLATFORM_API_URL =
+  process.env.PLATFORM_API_URL ?? "https://platform-api.ewooral.com";
+
+export const revalidate = 3600;
 
 const FEATURES: { icon: string; title: string; body: string }[] = [
   {
@@ -51,16 +55,8 @@ const FEATURES: { icon: string; title: string; body: string }[] = [
 const SALES_WA_URL =
   "https://wa.me/447888374946?text=Hi%2C%20I%27d%20like%20to%20discuss%20Aho%C9%94f%C9%9B%20Business%20tier%20for%20my%20company.";
 
-/**
- * Pricing tiers — values mirror Ahofe's canonical tier matrix
- * (`bfam-audit-agent/product/ahofe/070-tier-feature-matrix-canonical-
- * linux-2026-05-18.md` + GET https://bfam-backend-api.ewooral.com/api/v1/
- * ahofe/tier-matrix). This is a marketing page on a separate codebase from
- * ahofe-app — it doesn't share the live matrix hook. Treat as a static
- * mirror and review against the matrix every sprint, or convert to a
- * server-side fetch with `revalidate: 3600` for drift-proof rendering.
- */
-const PLANS: {
+type MarketingPlan = {
+  key: string;
   name: string;
   price: string;
   period: string;
@@ -70,8 +66,23 @@ const PLANS: {
   /** When set, the CTA opens this URL instead of the register URL. */
   cta_href?: string;
   popular?: boolean;
-}[] = [
+};
+
+type PlatformPlansEnvelope = {
+  success: boolean;
+  data?: {
+    plans?: {
+      plan: string;
+      contact_sales: boolean;
+      price_minor_monthly: number | null;
+      currency: string;
+    }[];
+  };
+};
+
+const FALLBACK_PLANS: MarketingPlan[] = [
   {
+    key: "free",
     name: "Free",
     price: "GH₵ 0.00",
     period: "forever",
@@ -88,6 +99,7 @@ const PLANS: {
     cta: "Start free",
   },
   {
+    key: "starter",
     name: "Starter",
     price: "GH₵ 149.90",
     period: "/ month",
@@ -102,6 +114,7 @@ const PLANS: {
     cta: "Choose Starter",
   },
   {
+    key: "pro",
     name: "Pro",
     price: "GH₵ 399.90",
     period: "/ month",
@@ -121,6 +134,7 @@ const PLANS: {
     popular: true,
   },
   {
+    key: "pro_plus",
     name: "Pro+",
     price: "GH₵ 749.90",
     period: "/ month",
@@ -135,6 +149,7 @@ const PLANS: {
     cta: "Choose Pro+",
   },
   {
+    key: "business",
     name: "Business",
     price: "GH₵ 1,499.90",
     period: "/ month",
@@ -154,6 +169,7 @@ const PLANS: {
     cta_href: SALES_WA_URL,
   },
   {
+    key: "custom",
     name: "Custom — for chains",
     price: "Contact sales",
     period: "",
@@ -170,6 +186,40 @@ const PLANS: {
     cta_href: SALES_WA_URL,
   },
 ];
+
+function formatGhsMinor(minor: number): string {
+  return `GH₵ ${(minor / 100).toLocaleString("en-GH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
+async function getMarketingPlans(): Promise<MarketingPlan[]> {
+  try {
+    const response = await fetch(
+      `${PLATFORM_API_URL}/api/v1/platform/pricing/ahofe/plans?currency=GHS&period=monthly`,
+      { next: { revalidate: 3600, tags: ["ahofe-pricing"] } },
+    );
+
+    if (!response.ok) return FALLBACK_PLANS;
+
+    const payload = (await response.json()) as PlatformPlansEnvelope;
+    if (!payload.success || !payload.data?.plans) return FALLBACK_PLANS;
+
+    const pricesByPlan = new Map(payload.data.plans.map((plan) => [plan.plan, plan]));
+
+    return FALLBACK_PLANS.map((plan) => {
+      const livePlan = pricesByPlan.get(plan.key);
+      if (!livePlan) return plan;
+      if (livePlan.contact_sales || livePlan.price_minor_monthly == null) {
+        return { ...plan, price: "Contact sales", period: "" };
+      }
+      return { ...plan, price: formatGhsMinor(livePlan.price_minor_monthly) };
+    });
+  } catch {
+    return FALLBACK_PLANS;
+  }
+}
 
 const FAQS: { q: string; a: string }[] = [
   {
@@ -214,7 +264,9 @@ const FAQS: { q: string; a: string }[] = [
   },
 ];
 
-export default function AhofeProductPage() {
+export default async function AhofeProductPage() {
+  const plans = await getMarketingPlans();
+
   return (
     <>
       <Nav />
@@ -415,7 +467,7 @@ export default function AhofeProductPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {PLANS.map((p) => (
+            {plans.map((p) => (
               <div
                 key={p.name}
                 className="p-6 rounded-2xl flex flex-col relative"
