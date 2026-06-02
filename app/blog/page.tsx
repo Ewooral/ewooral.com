@@ -283,6 +283,16 @@ export default async function BlogIndexPage({
                   </p>
                 </header>
 
+                {featured.cover_image_url && (
+                  <figure className="overflow-hidden border border-line bg-bg-2" style={{ borderRadius: "4px" }}>
+                    <img
+                      src={featured.cover_image_url}
+                      alt={featured.title}
+                      className="w-full aspect-[16/7] object-cover transition-transform duration-300 group-hover:scale-[1.015]"
+                    />
+                  </figure>
+                )}
+
                 <footer
                   className="flex items-center justify-between flex-wrap gap-4 pt-6 mt-2 border-t"
                   style={{ borderColor: "var(--line)" }}
@@ -332,6 +342,15 @@ export default async function BlogIndexPage({
                   className="group block"
                 >
                   <article className="flex flex-col h-full">
+                    {p.cover_image_url && (
+                      <div className="mb-4 overflow-hidden border border-line bg-bg-2" style={{ borderRadius: "4px" }}>
+                        <img
+                          src={p.cover_image_url}
+                          alt={p.title}
+                          className="w-full aspect-[16/9] object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                        />
+                      </div>
+                    )}
                     <div className="flex items-center gap-3 mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-ink-faint">
                       <span>{labelOf(p.category)}</span>
                       <span>·</span>

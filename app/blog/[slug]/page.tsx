@@ -32,7 +32,7 @@ type BlogPostDetail = {
   cover_image_url: string | null;
   author_id: string;
   author_name: string;
-  category: CategoryRef;
+  category: CategoryRef | null;
   tags: TagRef[];
   published_at: string;
   view_count?: number;
@@ -120,6 +120,7 @@ export default async function BlogDetailPage({
 
   const blurb = post.dek ?? post.excerpt;
   const showBody = hasBody(post);
+  const category = post.category;
 
   return (
     <>
@@ -129,17 +130,30 @@ export default async function BlogDetailPage({
         <article className="max-w-3xl mx-auto px-5 md:px-10 pt-28 md:pt-36">
           <header className="mb-12 md:mb-16">
             <div className="flex flex-wrap items-center gap-3 mb-6 text-[11px] font-mono uppercase tracking-[0.25em]">
-              <Link
-                href={`/blog?category=${encodeURIComponent(post.category.slug)}`}
-                className="px-2.5 py-1 no-underline transition-opacity hover:opacity-80"
-                style={{
-                  background: "var(--color-accent)",
-                  color: "var(--color-bg)",
-                  borderRadius: "2px",
-                }}
-              >
-                {post.category.label}
-              </Link>
+              {category ? (
+                <Link
+                  href={`/blog?category=${encodeURIComponent(category.slug)}`}
+                  className="px-2.5 py-1 no-underline transition-opacity hover:opacity-80"
+                  style={{
+                    background: "var(--color-accent)",
+                    color: "var(--color-bg)",
+                    borderRadius: "2px",
+                  }}
+                >
+                  {category.label}
+                </Link>
+              ) : (
+                <span
+                  className="px-2.5 py-1"
+                  style={{
+                    background: "var(--color-accent)",
+                    color: "var(--color-bg)",
+                    borderRadius: "2px",
+                  }}
+                >
+                  Article
+                </span>
+              )}
               <time dateTime={post.published_at} className="text-ink-faint">
                 {fmtDate(post.published_at)}
               </time>
@@ -189,6 +203,16 @@ export default async function BlogDetailPage({
               </div>
             </div>
           </header>
+
+          {post.cover_image_url && (
+            <figure className="mb-10 md:mb-14 overflow-hidden border border-line bg-bg-2" style={{ borderRadius: "4px" }}>
+              <img
+                src={post.cover_image_url}
+                alt={post.title}
+                className="w-full h-auto max-h-[520px] object-cover"
+              />
+            </figure>
+          )}
 
           {showBody && post.body_html ? (
             <div
