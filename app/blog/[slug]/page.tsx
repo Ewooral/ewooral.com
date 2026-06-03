@@ -12,6 +12,10 @@ const PLATFORM_API =
   process.env.NEXT_PUBLIC_PLATFORM_API_URL ??
   "https://platform-api.ewooral.com";
 
+const SITE_ORIGIN = "https://ewooral.com";
+const SOCIAL_IMAGE_WIDTH = 1200;
+const SOCIAL_IMAGE_HEIGHT = 630;
+
 type Envelope<T> =
   | { success: true; data: T; message?: string }
   | { success: false; error: { code: string; message: string } };
@@ -73,6 +77,35 @@ const hasBody = (p: BlogPostDetail): boolean => {
   return Array.isArray(content) && content.length > 0;
 };
 
+function socialImageForPost(post: BlogPostDetail) {
+  const cover = post.cover_image_url?.trim();
+  const generated = `${SITE_ORIGIN}/blog/${encodeURIComponent(post.slug)}/opengraph-image`;
+  if (!cover || /\.(avif|pdf)(?:[?#]|$)/i.test(cover)) {
+    return {
+      url: generated,
+      width: SOCIAL_IMAGE_WIDTH,
+      height: SOCIAL_IMAGE_HEIGHT,
+      alt: post.title,
+    };
+  }
+
+  return {
+    url: cover,
+    width: SOCIAL_IMAGE_WIDTH,
+    height: SOCIAL_IMAGE_HEIGHT,
+    alt: post.title,
+    type: imageTypeFromUrl(cover),
+  };
+}
+
+function imageTypeFromUrl(url: string): string | undefined {
+  if (/\.jpe?g(?:[?#]|$)/i.test(url)) return "image/jpeg";
+  if (/\.png(?:[?#]|$)/i.test(url)) return "image/png";
+  if (/\.webp(?:[?#]|$)/i.test(url)) return "image/webp";
+  if (/\.gif(?:[?#]|$)/i.test(url)) return "image/gif";
+  return undefined;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -85,7 +118,8 @@ export async function generateMetadata({
   const title = post.seo_meta_title ?? post.title;
   const description =
     post.seo_meta_description ?? post.dek ?? post.excerpt ?? "";
-  const url = `https://ewooral.com/blog/${post.slug}`;
+  const url = `${SITE_ORIGIN}/blog/${post.slug}`;
+  const socialImage = socialImageForPost(post);
 
   return {
     title: `${title} · Ewooral`,
@@ -98,13 +132,13 @@ export async function generateMetadata({
       type: "article",
       publishedTime: post.published_at,
       authors: [post.author_name],
-      images: post.cover_image_url ? [{ url: post.cover_image_url }] : undefined,
+      images: [socialImage],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: post.cover_image_url ? [post.cover_image_url] : undefined,
+      images: [socialImage.url],
     },
   };
 }

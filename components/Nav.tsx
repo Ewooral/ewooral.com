@@ -129,8 +129,8 @@ export default function Nav() {
   }, [menuOpen]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-xl bg-bg/70 border-b border-line">
-      <div className="max-w-[1320px] mx-auto px-8 py-[18px] flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-[100] border-b border-line" style={{ background: "var(--color-bg)", boxShadow: "0 10px 30px rgba(0,0,0,0.08)" }}>
+      <div className="max-w-[1320px] mx-auto px-6 md:px-8 py-4 md:py-[18px] flex items-center justify-between">
         {/* Logo */}
         <a
           href="/"
@@ -251,14 +251,19 @@ export default function Nav() {
           a hex), so `bg-bg/98` compiles but produces no fill → transparent
           sheet. Set background explicitly. */}
       <div
-        className={`md:hidden fixed inset-0 top-[60px] backdrop-blur-xl transition-all duration-300 ${
+        className={`md:hidden fixed left-0 right-0 top-[73px] bottom-0 transition-all duration-300 ${
           menuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+            ? "opacity-100 pointer-events-auto translate-y-0"
+            : "opacity-0 pointer-events-none -translate-y-2"
         }`}
-        style={{ background: "var(--color-bg)" }}
+        style={{
+          background: "var(--color-bg)",
+          borderTop: "1px solid var(--line)",
+          boxShadow: "0 24px 60px rgba(0,0,0,0.22)",
+        }}
       >
-        <ul className="flex flex-col items-center gap-8 pt-16 list-none">
+        <div className="h-full overflow-y-auto px-5 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-5">
+          <ul className="list-none space-y-2">
           {links.map((l) => {
             const isAnchor = l.href.startsWith("/#");
             const isActive = isAnchor
@@ -269,35 +274,42 @@ export default function Nav() {
                 <a
                   href={l.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`text-[18px] font-medium tracking-[0.1em] uppercase no-underline transition-colors ${
-                    isActive ? "text-accent" : "text-ink-dim hover:text-ink"
+                  className={`flex items-center justify-between border px-4 py-4 text-[13px] font-semibold tracking-[0.18em] uppercase no-underline transition-colors ${
+                    isActive ? "text-accent" : "text-ink hover:text-accent"
                   }`}
+                  style={{
+                    background: isActive ? "rgba(217, 149, 0, 0.1)" : "var(--color-bg-2)",
+                    borderColor: isActive ? "var(--color-accent)" : "var(--line)",
+                    borderRadius: "3px",
+                  }}
                 >
-                  {l.label}
+                  <span>{l.label}</span>
+                  <span className="text-accent">→</span>
                 </a>
               </li>
             );
           })}
-          <li className="mt-4">
+          <li className="pt-3">
             <a
               href="/#contact"
               onClick={() => setMenuOpen(false)}
-              className="inline-block bg-accent text-bg px-8 py-4 font-bold text-[14px] tracking-[0.1em] uppercase no-underline"
+              className="block w-full bg-accent text-bg px-5 py-4 text-center font-bold text-[13px] tracking-[0.18em] uppercase no-underline"
+              style={{ borderRadius: "3px" }}
             >
               Get in touch
             </a>
           </li>
-          <li className="mt-2">
+          <li className="pt-2">
             {viewer ? (
-              <div className="flex flex-col items-center gap-3">
-                <span className="max-w-[240px] truncate text-[15px] font-medium tracking-[0.08em] uppercase text-ink-dim">
+              <div className="flex flex-col gap-3 border border-line bg-bg-2 p-4" style={{ borderRadius: "3px" }}>
+                <span className="max-w-[240px] truncate text-[13px] font-medium tracking-[0.08em] uppercase text-ink-dim">
                   Hi, {firstName}
                 </span>
                 <button
                   type="button"
                   onClick={signOut}
                   disabled={signingOut}
-                  className="text-[15px] font-medium tracking-[0.08em] uppercase text-ink-dim hover:text-accent transition-colors disabled:opacity-50"
+                  className="text-left text-[13px] font-medium tracking-[0.08em] uppercase text-ink hover:text-accent transition-colors disabled:opacity-50"
                 >
                   {signingOut ? "Signing out" : "Sign out"}
                 </button>
@@ -306,25 +318,28 @@ export default function Nav() {
               <a
                 href="/register"
                 onClick={() => setMenuOpen(false)}
-                className={`text-[15px] font-medium tracking-[0.08em] uppercase no-underline transition-colors ${
+                className={`block border px-4 py-4 text-[13px] font-semibold tracking-[0.14em] uppercase no-underline transition-colors ${
                   pathname === "/register"
                     ? "text-accent"
-                    : "text-ink-dim hover:text-accent"
+                    : "text-ink hover:text-accent"
                 }`}
+                style={{ background: "var(--color-bg-2)", borderColor: "var(--line)", borderRadius: "3px" }}
               >
                 Sign in / Sign up
               </a>
             )}
           </li>
-          <li className="mt-2">
+          <li className="pt-2">
             <button
               onClick={cycle}
-              className="text-[14px] font-medium tracking-[0.08em] uppercase text-ink-dim hover:text-accent transition-colors"
+              className="w-full border px-4 py-4 text-left text-[13px] font-semibold tracking-[0.14em] uppercase text-ink hover:text-accent transition-colors"
+              style={{ background: "var(--color-bg-2)", borderColor: "var(--line)", borderRadius: "3px" }}
             >
               Theme: {theme === "default" ? "Company" : theme === "light" ? "Light" : "Dark"}
             </button>
           </li>
         </ul>
+        </div>
       </div>
     </nav>
   );
