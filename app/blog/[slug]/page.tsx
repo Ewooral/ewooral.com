@@ -433,6 +433,18 @@ function AuthorAvatar({ name }: { name: string }) {
 function renderArticleHtml(input: string): string {
   const trimmed = input.trim();
   if (!trimmed) return "";
+  // Owner ask 2026-06-03: new posts lost their links + styling on the
+  // public renderer. Root cause was this function: any body with "1." or
+  // "- " hit looksLikeMarkdown(), then htmlToMarkdownText stripped EVERY
+  // HTML tag via /<[^>]+>/g and re-rendered from text — anchors, styles,
+  // bold, inline images all gone.
+  //
+  // Fix: when the input already has block-level HTML (the TipTap admin
+  // editor always emits <p>/<h*>/<ul>/etc.), pass it through unchanged so
+  // anchors survive. Markdown-conversion path stays for the few seed
+  // posts that ship as raw markdown text (e.g. the welcome post).
+  const hasBlockHtml = /<\s*(p|div|h[1-6]|ul|ol|blockquote|article|section|figure|table)\b/i.test(trimmed);
+  if (hasBlockHtml) return trimmed;
   return looksLikeMarkdown(trimmed) ? markdownToHtml(htmlToMarkdownText(trimmed)) : trimmed;
 }
 
