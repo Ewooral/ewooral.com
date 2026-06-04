@@ -23,6 +23,8 @@ type ContactFormData = {
   phone: string;
   service: string;
   message: string;
+  source?: string;
+  page_url?: string;
 };
 
 const inputBase =
@@ -54,7 +56,11 @@ export default function ContactForm() {
       const res = await fetch(`${API_URL}/api/v1/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          source: data.source || "contact_form",
+          page_url: data.page_url || (typeof window !== "undefined" ? window.location.href : undefined),
+        }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
