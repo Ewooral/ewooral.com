@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DOMPurify from "isomorphic-dompurify";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ReadingProgress from "@/components/blog/ReadingProgress";
@@ -119,7 +120,10 @@ export default function BlogPreviewPage() {
               )}
 
               {post.body_html?.trim() ? (
-                <div className="prose-blog" dangerouslySetInnerHTML={{ __html: post.body_html }} />
+                <div
+                  className="prose-blog"
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.body_html) }}
+                />
               ) : (
                 <div className="text-center py-10 px-6 mt-4" style={{ border: "1px dashed var(--line-strong)", borderRadius: "4px" }}>
                   <div className="font-mono text-[11px] uppercase tracking-[0.25em] mb-2 text-ink-faint">No body yet</div>

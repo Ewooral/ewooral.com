@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import DOMPurify from "isomorphic-dompurify";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ReadingProgress from "@/components/blog/ReadingProgress";
@@ -154,7 +155,13 @@ export default async function BlogDetailPage({
 
   const blurb = post.dek ?? post.excerpt;
   const showBody = hasBody(post);
-  const articleHtml = post.body_html ? renderArticleHtml(post.body_html) : "";
+  // Belt-and-braces sanitisation (audit-139 §5 / §3.19): the Rust backend
+  // ammonia-sanitises on write, but a write-path bug, a manual DB row, or
+  // a future migration could ship unclean HTML through this surface.
+  // DOMPurify on the render side is the cheap belt-and-braces sweep.
+  const articleHtml = post.body_html
+    ? DOMPurify.sanitize(renderArticleHtml(post.body_html))
+    : "";
   const category = post.category;
 
   return (
