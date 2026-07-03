@@ -11,13 +11,10 @@ export const metadata: Metadata = {
 
 const APK_URL = "https://cdn.ewooral.com/apps/ahofe-mobile.apk";
 const REGISTER_URL = "https://ahofe.ewooral.com/register";
+const PRICING_URL = "https://ahofe.ewooral.com/pricing";
 // UK number is the canonical Ewooral & BFAM contact — matches Footer, FinalCTA, WhatsAppFloat
 const WHATSAPP_URL =
   "https://wa.me/447888374946?text=Hi%2C%20I%20want%20to%20learn%20more%20about%20Aho%C9%94f%C9%9B";
-const PLATFORM_API_URL =
-  process.env.PLATFORM_API_URL ?? "https://platform-api.ewooral.com";
-
-export const revalidate = 3600;
 
 const FEATURES: { icon: string; title: string; body: string }[] = [
   {
@@ -51,175 +48,6 @@ const FEATURES: { icon: string; title: string; body: string }[] = [
     body: "Take bookings on the go. Android beta available now, iOS rolling out 2026.",
   },
 ];
-
-const SALES_WA_URL =
-  "https://wa.me/447888374946?text=Hi%2C%20I%27d%20like%20to%20discuss%20Aho%C9%94f%C9%9B%20Business%20tier%20for%20my%20company.";
-
-type MarketingPlan = {
-  key: string;
-  name: string;
-  price: string;
-  period: string;
-  blurb: string;
-  features: string[];
-  cta: string;
-  /** When set, the CTA opens this URL instead of the register URL. */
-  cta_href?: string;
-  popular?: boolean;
-};
-
-type PlatformPlansEnvelope = {
-  success: boolean;
-  data?: {
-    plans?: {
-      plan: string;
-      contact_sales: boolean;
-      price_minor_monthly: number | null;
-      currency: string;
-    }[];
-  };
-};
-
-const FALLBACK_PLANS: MarketingPlan[] = [
-  {
-    key: "free",
-    name: "Free",
-    price: "GH₵ 0.00",
-    period: "forever",
-    blurb: "Take bookings, see if it fits.",
-    features: [
-      "50 bookings per month",
-      "1 staff member",
-      "5 services",
-      "1 location",
-      "WhatsApp deep links",
-      "Customer database",
-      "Public booking page (own slug)",
-    ],
-    cta: "Start free",
-  },
-  {
-    key: "starter",
-    name: "Starter",
-    price: "GH₵ 149.90",
-    period: "/ month",
-    blurb: "Solo operators ready to look pro.",
-    features: [
-      "Unlimited bookings",
-      "3 staff members",
-      "300 SMS + WhatsApp / month",
-      "Reviews v2 — owner reply + moderation",
-      "Everything in Free",
-    ],
-    cta: "Choose Starter",
-  },
-  {
-    key: "pro",
-    name: "Pro",
-    price: "GH₵ 399.90",
-    period: "/ month",
-    blurb: "Multi-staff salons growing fast.",
-    features: [
-      "10 staff members",
-      "3 locations",
-      "1,500 SMS + WhatsApp / month",
-      "MoMo deposits + online payments",
-      "Business photo gallery on booking page",
-      "Customer segments (VIP / at-risk / new)",
-      "Stylist performance leaderboard",
-      "Revenue analytics + CSV export",
-      "Everything in Starter",
-    ],
-    cta: "Choose Pro",
-    popular: true,
-  },
-  {
-    key: "pro_plus",
-    name: "Pro+",
-    price: "GH₵ 749.90",
-    period: "/ month",
-    blurb: "Multi-location chains hitting ₵100k+/month.",
-    features: [
-      "Unlimited staff members",
-      "3,000 SMS + WhatsApp / month",
-      "No-show risk predictor",
-      "API access (read-only)",
-      "Everything in Pro",
-    ],
-    cta: "Choose Pro+",
-  },
-  {
-    key: "business",
-    name: "Business",
-    price: "GH₵ 1,499.90",
-    period: "/ month",
-    blurb: "Established brands with unlimited needs.",
-    features: [
-      "Unlimited locations",
-      "6,000 SMS + WhatsApp / month",
-      "Multi-location dashboard + cross-loc reports",
-      "Demand forecast (day-of-week, seasonal)",
-      "Customer lifetime value",
-      "Custom RBAC roles",
-      "Priority Roadmap Input (feature requests)",
-      "White-label (own branding on booking page)",
-      "Everything in Pro+",
-    ],
-    cta: "Choose Business",
-    cta_href: SALES_WA_URL,
-  },
-  {
-    key: "custom",
-    name: "Custom — for chains",
-    price: "Contact sales",
-    period: "",
-    blurb: "Enterprise chains: 5K+ customers or 3+ branches.",
-    features: [
-      "Bespoke engineering",
-      "Dedicated success engineer",
-      "Custom integrations + white-glove migration",
-      "Volume discounts on SMS, AI, payouts",
-      "SLAs + 24/7 priority support",
-      "Everything in Business",
-    ],
-    cta: "Contact sales",
-    cta_href: SALES_WA_URL,
-  },
-];
-
-function formatGhsMinor(minor: number): string {
-  return `GH₵ ${(minor / 100).toLocaleString("en-GH", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-}
-
-async function getMarketingPlans(): Promise<MarketingPlan[]> {
-  try {
-    const response = await fetch(
-      `${PLATFORM_API_URL}/api/v1/platform/pricing/ahofe/plans?currency=GHS&period=monthly`,
-      { next: { revalidate: 3600, tags: ["ahofe-pricing"] } },
-    );
-
-    if (!response.ok) return FALLBACK_PLANS;
-
-    const payload = (await response.json()) as PlatformPlansEnvelope;
-    if (!payload.success || !payload.data?.plans) return FALLBACK_PLANS;
-
-    const pricesByPlan = new Map(payload.data.plans.map((plan) => [plan.plan, plan]));
-
-    return FALLBACK_PLANS.map((plan) => {
-      const livePlan = pricesByPlan.get(plan.key);
-      if (!livePlan) return plan;
-      if (livePlan.contact_sales || livePlan.price_minor_monthly == null) {
-        return { ...plan, price: "Contact sales", period: "" };
-      }
-      return { ...plan, price: formatGhsMinor(livePlan.price_minor_monthly) };
-    });
-  } catch {
-    return FALLBACK_PLANS;
-  }
-}
 
 const FAQS: { q: string; a: string }[] = [
   {
@@ -264,9 +92,7 @@ const FAQS: { q: string; a: string }[] = [
   },
 ];
 
-export default async function AhofeProductPage() {
-  const plans = await getMarketingPlans();
-
+export default function AhofeProductPage() {
   return (
     <>
       <Nav />
@@ -453,88 +279,33 @@ export default async function AhofeProductPage() {
         className="px-6 md:px-10 py-16 md:py-24 border-t border-line"
         id="pricing"
       >
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent mb-3">
-              Pricing
-            </div>
-            <h2 className="font-display font-bold text-3xl md:text-4xl mb-3">
-              Pay only when you grow.
-            </h2>
-            <p className="text-ink-dim">
-              Start free. Upgrade when you need more bookings, staff, or AI features.
-            </p>
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent mb-3">
+            Pricing
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {plans.map((p) => (
-              <div
-                key={p.name}
-                className="p-6 rounded-2xl flex flex-col relative"
-                style={{
-                  background: p.popular
-                    ? "linear-gradient(180deg, rgba(245,184,32,0.06), var(--color-bg-2))"
-                    : "var(--color-bg-2)",
-                  border: `1px solid ${p.popular ? "rgba(245,184,32,0.40)" : "var(--line)"}`,
-                }}
-              >
-                {p.popular && (
-                  <div
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full font-mono text-[9px] uppercase tracking-[0.18em]"
-                    style={{ background: "var(--color-accent)", color: "var(--color-bg)" }}
-                  >
-                    Most popular
-                  </div>
-                )}
-                <div className="font-display text-lg font-bold mb-1">{p.name}</div>
-                <div className="text-[11px] text-ink-faint mb-4">{p.blurb}</div>
-                <div className="mb-5">
-                  <span className="font-display font-bold text-[32px] text-accent leading-none">
-                    {p.price}
-                  </span>
-                  <span className="text-sm text-ink-dim ml-2">{p.period}</span>
-                </div>
-                <ul className="space-y-2 mb-6 flex-1">
-                  {p.features.map((feat) => (
-                    <li key={feat} className="flex items-start gap-2 text-sm">
-                      <span style={{ color: "var(--color-accent)" }}>✓</span>
-                      <span className="text-ink-dim leading-relaxed">{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-                {p.cta_href ? (
-                  <a
-                    href={p.cta_href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-center px-4 py-2.5 rounded-xl font-mono text-[11px] uppercase tracking-[0.18em] transition-all"
-                    style={
-                      p.popular
-                        ? { background: "var(--color-accent)", color: "var(--color-bg)" }
-                        : { border: "1px solid var(--line-strong)", color: "var(--color-ink)" }
-                    }
-                  >
-                    {p.cta}
-                  </a>
-                ) : (
-                  <Link
-                    href={REGISTER_URL}
-                    className="block text-center px-4 py-2.5 rounded-xl font-mono text-[11px] uppercase tracking-[0.18em] transition-all"
-                    style={
-                      p.popular
-                        ? { background: "var(--color-accent)", color: "var(--color-bg)" }
-                        : { border: "1px solid var(--line-strong)", color: "var(--color-ink)" }
-                    }
-                  >
-                    {p.cta}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-8 font-mono text-[11px] text-ink-faint">
-            All prices in GH₵. Switch tiers any time. No long-term contracts.
+          <h2 className="font-display font-bold text-3xl md:text-4xl mb-3">
+            Pay only when you grow.
+          </h2>
+          <p className="text-ink-dim mb-8">
+            Start free. Upgrade when you need more bookings, staff, or AI
+            features. Six tiers from GH₵ 0 to enterprise — displayed in your
+            local currency on the pricing page.
+          </p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link
+              href={PRICING_URL}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-mono text-[12px] uppercase tracking-[0.18em] font-medium"
+              style={{ background: "var(--color-accent)", color: "var(--color-bg)" }}
+            >
+              See all plans →
+            </Link>
+            <Link
+              href={REGISTER_URL}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-mono text-[12px] uppercase tracking-[0.18em]"
+              style={{ border: "1px solid var(--line-strong)", color: "var(--color-ink)" }}
+            >
+              Start free
+            </Link>
           </div>
         </div>
       </section>
